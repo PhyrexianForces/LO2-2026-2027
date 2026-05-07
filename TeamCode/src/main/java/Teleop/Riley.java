@@ -32,7 +32,7 @@ public class Riley extends OpMode{
     backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
   }
 
-  public void driveOmni(double x, double y, double rx) {
+  public void driveOmni(double y, double rx, double x) {
     final double MTPS = 4661;
     //Finds the greatest, positive, not float value among x, y, and rx
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
