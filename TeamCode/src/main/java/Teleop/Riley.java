@@ -61,5 +61,8 @@ public class Riley extends OpMode{
     double x = gamepad1.left_stick_x;
     double rx = gamepad1.right_stick_x;
     driveOmni(y, rx, x);
-  }
+    if (gamepad1.a) {
+      intakeMotor.setVelocity(1)
+    }
+   }
 }
