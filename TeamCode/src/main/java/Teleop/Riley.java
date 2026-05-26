@@ -47,12 +47,12 @@ public class Riley extends OpMode{
     double brPower = (y + x - rx) / maxValue;
 
     //Slowdown variable
-    double slowDown = 1.0;
+    double slowDown = 0.5;
 
-    frontLeft.setVelocity(0.5*(flPower * MTPS));
-    frontRight.setVelocity(0.5*(frPower * MTPS));
-    backLeft.setVelocity(0.5*(blPower * MTPS));
-    backRight.setVelocity(0.5*(brPower * MTPS));
+    frontLeft.setVelocity(slowDown * (flPower * MTPS));
+    frontRight.setVelocity(slowDown * (frPower * MTPS));
+    backLeft.setVelocity(slowDown * (blPower * MTPS));
+    backRight.setVelocity(slowDown * (brPower * MTPS));
   }
 
 
@@ -68,9 +68,9 @@ public class Riley extends OpMode{
       intakeMotor.setVelocity(1)
     }
     if (gamepad1.b) {
-      slowDown = 0.5;
+      slowDown = 0.25;
     } else {
-      slowDown = 1;
+      slowDown = 0.5;
     }
    }
 }
