@@ -10,7 +10,7 @@ import java.lang.Math;
 
 @TeleOp
 public class Riley extends OpMode{
-  private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
+  private DcMotorEx frontLeft, frontRight, backLeft, backRight;
   //Slowdown variable
   public double slowDown = 0.5;
   
@@ -20,21 +20,18 @@ public class Riley extends OpMode{
     frontRight = hardwareMap.get(DcMotorEx.class, "fr");
     backLeft = hardwareMap.get(DcMotorEx.class, "bl");
     backRight = hardwareMap.get(DcMotorEx.class, "br");
-    intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
 
     //Determines motor direction
     frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
     backLeft.setDirection(DcMotorEx.Direction.REVERSE);
     frontRight.setDirection(DcMotorEx.Direction.FORWARD);
     frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-    intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
     //Encodes for motors
     frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
   }
 
   public void driveOmni(double y, double rx, double x) {
@@ -64,14 +61,11 @@ public class Riley extends OpMode{
     double rx = gamepad1.right_stick_x;
     if (gamepad1.x) {
       slowDown = 0.05;
-      telemetry.addLine("Slowed Speed")
+      telemetry.addLine("Slowed Speed");
     } else {
       slowDown = 0.5;
-      telemetry.addLine("Normal Speed")
+      telemetry.addLine("Normal Speed");
     }
     driveOmni(y, rx, x);
-    if (gamepad1.a) {
-      intakeMotor.setVelocity(1)
-    }
    }
 }
