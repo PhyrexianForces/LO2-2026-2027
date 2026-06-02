@@ -40,15 +40,15 @@ public class Riley extends OpMode{
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
 
     //Math stuff
-    double flPower = (y + x + rx) / maxValue;
-    double blPower = (y - x + rx) / maxValue;
-    double frPower = (y - x - rx) / maxValue;
-    double brPower = (y + x - rx) / maxValue;
+    double flPower = slowDown * (y + x + rx) / maxValue;
+    double blPower = slowDown * (y - x + rx) / maxValue;
+    double frPower = slowDown * (y - x - rx) / maxValue;
+    double brPower = slowDown * (y + x - rx) / maxValue;
 
-    frontLeft.setVelocity(slowDown * (flPower * MTPS));
-    frontRight.setVelocity(slowDown * (frPower * MTPS));
-    backLeft.setVelocity(slowDown * (blPower * MTPS));
-    backRight.setVelocity(slowDown * (brPower * MTPS));
+    frontLeft.setVelocity(flPower * MTPS);
+    frontRight.setVelocity(frPower * MTPS);
+    backLeft.setVelocity(blPower * MTPS);
+    backRight.setVelocity(brPower * MTPS);
   }
 
 
