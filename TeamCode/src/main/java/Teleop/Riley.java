@@ -60,7 +60,7 @@ public class Riley extends OpMode{
     double x = gamepad1.left_stick_x;
     double rx = gamepad1.right_stick_x;
     if (gamepad1.x) {
-      slowDown = 0.05;
+      slowDown = 0.005;
       telemetry.addLine("Slowed Speed");
     } else {
       slowDown = 0.5;
