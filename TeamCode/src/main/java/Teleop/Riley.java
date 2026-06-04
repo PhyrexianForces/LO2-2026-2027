@@ -34,21 +34,22 @@ public class Riley extends OpMode{
     backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
   }
 
-  public void driveOmni(double y, double rx, double x) {
+  public void driveOmni(double y, double rx, double x, double slowDown) {
     final double MTPS = 4661;
     //Finds the greatest, positive, not float value among x, y, and rx
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
 
     //Math stuff
-    double flPower = slowDown * (y + x + rx) / maxValue;
-    double blPower = slowDown * (y - x + rx) / maxValue;
-    double frPower = slowDown * (y - x - rx) / maxValue;
-    double brPower = slowDown * (y + x - rx) / maxValue;
+    double flPower = (y + x + rx) / maxValue;
+    double blPower = (y - x + rx) / maxValue;
+    double frPower = (y - x - rx) / maxValue;
+    double brPower = (y + x - rx) / maxValue;
 
-    frontLeft.setVelocity(flPower * MTPS);
-    frontRight.setVelocity(frPower * MTPS);
-    backLeft.setVelocity(blPower * MTPS);
-    backRight.setVelocity(brPower * MTPS);
+    frontLeft.setVelocity(slowDown/2 * flPower * MTPS);
+    frontRight.setVelocity(slowDown/2 * frPower * MTPS);
+    backLeft.setVelocity(slowDown/2 * blPower * MTPS);
+    backRight.setVelocity(slowDown/2 * brPower * MTPS);
+
   }
 
 
@@ -60,12 +61,12 @@ public class Riley extends OpMode{
     double x = gamepad1.left_stick_x;
     double rx = gamepad1.right_stick_x;
     if (gamepad1.x) {
-      slowDown = 0.005;
-      telemetry.addLine("Slowed Speed");
+      slowDown = 1;
+      telemetry.addLine(String.valueOf(slowDown));
     } else {
-      slowDown = 0.5;
-      telemetry.addLine("Normal Speed");
+      slowDown = 2;
+      telemetry.addLine(String.valueOf(slowDown));
     }
-    driveOmni(y, rx, x);
+    driveOmni(y, rx, x, slowDown);
    }
 }
