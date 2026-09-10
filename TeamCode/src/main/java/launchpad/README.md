@@ -101,11 +101,18 @@ Low-level mecanum drivetrain control.
 | Method | Description |
 |---|---|
 | `setRelativePower(MovementVector)` | Robot-centric power, normalized to [-1, 1] |
-| `setRelativeVelocity(MovementVector)` | Robot-centric velocity in in/s |
+| `setRelativeVelocity(MovementVector)` | Robot-centric velocity in in/s. Returns the factor the command was scaled by |
 | `setAbsolutePower(FieldPosition, MovementVector)` | Field-centric power — rotates the vector by the robot's heading |
-| `setAbsoluteVelocity(FieldPosition, MovementVector)` | Field-centric velocity |
+| `setAbsoluteVelocity(FieldPosition, MovementVector)` | Field-centric velocity. Returns the factor the command was scaled by |
+| `maxScaleFor(MovementVector)` | How far a command can be scaled up before the fastest wheel saturates. For a unit vector, this is the top speed in that direction |
 
 `MecanumCoefficientMatrix` computes per-wheel coefficients and handles direction inversion via a `MecanumCoefficientSet`.
+
+Velocity commands are limited to `maxWheelVelocity`, and lifted to `minWheelVelocity` if one was given. Both limits multiply all four wheels by the same factor, so the vertical, horizontal, and rotational parts of a command keep their ratios: the robot always travels in the direction that was asked for, and only its speed changes. That is what keeps all three axes covering the same percentage of their movement as each other.
+
+Top speed depends on direction, because every axis of a command draws on the same four wheels. Driving straight forwards or sideways reaches the full `maxWheelVelocity`, driving at 45 degrees stacks two components onto the same wheels and reaches about 71% of it, and rotation takes a further share. Use `maxScaleFor` to size a command to the direction it is going, so it is followed exactly instead of being cut down.
+
+`minWheelVelocity` exists because proportional control slows as it approaches its target and eventually stalls short on friction. **Callers using it must stop the robot once it is within tolerance**, or the floor drives it past the target and back forever. `minWheelVelocity * loopTimeSeconds` must also stay well under the position tolerance, or the robot can step over the tolerance band in one loop and never register as arrived.
 
 ### `pathing`
 Localization interface and implementations. Separate from movement; localizers do not touch motors.
@@ -115,7 +122,7 @@ Localization interface and implementations. Separate from movement; localizers d
 | `Localizer` | Interface: `init()`, `loop()`, `getCurrentPosition() → FieldPosition` |
 | `PinpointLocalizer` | Implements `Localizer` using a GoBilda Pinpoint. Configures pod offsets (mm), directions, and encoder resolution on construction. Also exposes `getVelocity()`, `setCurrentFieldPosition()`, and `isDoneInitializing()` |
 
-### `manipulators`
+### `Subsystems`
 Base class for robot subsystems.
 
 `Subsystem` extends `Loop` and adds `init(HardwareMap)` and an optional `stop()`. Register subsystems with `Robot.register()` — this calls `init` immediately and schedules `loop`/`stop` automatically.
