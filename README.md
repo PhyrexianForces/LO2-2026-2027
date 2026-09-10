@@ -121,8 +121,8 @@ Localization interface and implementations. Separate from movement; localizers d
 | `Localizer` | Interface: `init()`, `loop()`, `getCurrentPosition() → FieldPosition` |
 | `PinpointLocalizer` | Implements `Localizer` using a GoBilda Pinpoint. Configures pod offsets (mm), directions, and encoder resolution on construction. Also exposes `getVelocity()`, `setCurrentFieldPosition()`, and `isDoneInitializing()` |
 
-### `manipulators`
-Base class for robot subsystems.
+### `subsystems`
+Classes for robot subsystems, such as claws, storage mechanisms, or intakes.
 
 `Subsystem` extends `Loop` and adds `init(HardwareMap)` and an optional `stop()`. Register subsystems with `Robot.register()` — this calls `init` immediately and schedules `loop`/`stop` automatically.
 
