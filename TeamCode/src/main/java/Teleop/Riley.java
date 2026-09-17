@@ -6,6 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+//Limelight
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 import java.lang.Math;
 
 @TeleOp
@@ -25,7 +31,7 @@ public class Riley extends OpMode{
     frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
     backLeft.setDirection(DcMotorEx.Direction.REVERSE);
     frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-    frontRight.setDirection(DcMotorEx.Direction.FORWARD);
+    backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
     //Encodes for motors
     frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
