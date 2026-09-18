@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import launchpad.actions.Action;
 import launchpad.actions.ActionParameter;
@@ -107,9 +106,11 @@ public class TelemetryUpdatePacket extends TelemetryPacket {
             List<String> actionParameters = new ArrayList<>();
 
             telemetryAction.actionName = action.getClass().getSimpleName();
-            for (Field field : action.getClass().getFields()) {
+            for (Field field : action.getClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(ActionParameter.class)) {
-                    String parameterValue = Objects.requireNonNull(field.get(action.getClass())).toString();
+                    field.setAccessible(true);
+                    Object value = field.get(action);
+                    String parameterValue = value == null ? "null" : value.toString();
                     actionParameters.add(parameterValue.isEmpty() ? "(null)" : parameterValue);
                 }
             }
