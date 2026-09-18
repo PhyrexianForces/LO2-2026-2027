@@ -21,14 +21,18 @@ public class MoveToAction implements Action {
     /**
      * The speed to move horizontally/vertically or some combination of the two in inches/sec
      */
+    @ActionParameter
     private final double movementSpeedMultiplier;
 
     /**
      * The max rotational speed of the robot in radians/sec
      */
+    @ActionParameter
     private final double rotationalSpeedMultiplier;
 
+    @ActionParameter
     private final double maxDistanceError;
+    @ActionParameter
     private final double maxRotationalError;
 
     private final Controller xController;

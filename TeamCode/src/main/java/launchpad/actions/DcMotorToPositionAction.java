@@ -8,8 +8,9 @@ import launchpad.hardware.Motor;
 
 public class DcMotorToPositionAction implements Action {
     private final Motor motor;
-    private final int targetTicks;
-    private final double power;
+    final int targetTicks;
+    @ActionParameter final double targetRotation;
+    @ActionParameter final double power;
     private boolean started = false;
 
     /**
@@ -20,6 +21,7 @@ public class DcMotorToPositionAction implements Action {
     public DcMotorToPositionAction(@NonNull Motor motor, double targetRotation, double power) {
         this.motor = motor;
         this.targetTicks = motor.getMotorEncoder().toTicks(targetRotation);
+        this.targetRotation = targetRotation;
         this.power = power;
     }
 

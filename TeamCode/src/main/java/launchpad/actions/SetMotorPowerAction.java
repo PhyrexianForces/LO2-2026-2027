@@ -7,7 +7,7 @@ import launchpad.hardware.Motor;
 public class SetMotorPowerAction extends RunOnceAction {
 
     private final Motor motor;
-    private final double power;
+    @ActionParameter final double power;
 
     public SetMotorPowerAction(@NonNull Motor motor, double power) {
         this.motor = motor;
