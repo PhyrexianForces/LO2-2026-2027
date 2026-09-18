@@ -1,6 +1,6 @@
-# Launchpad
+# launchpad
 
-FTC robot framework by Team 4096. This package provides reusable building blocks for both teleop and autonomous operation. Each sub-package is independent; use only what your op mode needs.
+FTC robot framework for Team 4096. This package provides reusable building blocks for both teleop and autonomous operation. Each sub-package is independent; use only what your op mode needs.
 
 ## Core
 
@@ -19,12 +19,6 @@ robot.loop();
 
 ### `TeleopBase`
 Abstract `OpMode` subclass that creates a `Robot` and two `Gamepad` wrappers. Override `registerSubclasses()` to call `robot.register(...)` for each subsystem.
-
-### `MotorTestTeleop`
-An `Opmode` designed for testing multiple motors. Automatically detects active motors and allows manipulating speed and velocity via `Gamepad`
-
-### `ServoTestTelop`
-An `Opmode` designed for testing multiple servos. Automatically detects active motors and allows manipulating position via `Gamepad`
 
 ### `Constants`
 Robot-specific tuning values: drive motor config, mecanum coefficient matrix, Pinpoint offsets, movement velocity/steepness, and GoBilda motor tick counts.
@@ -121,8 +115,8 @@ Localization interface and implementations. Separate from movement; localizers d
 | `Localizer` | Interface: `init()`, `loop()`, `getCurrentPosition() → FieldPosition` |
 | `PinpointLocalizer` | Implements `Localizer` using a GoBilda Pinpoint. Configures pod offsets (mm), directions, and encoder resolution on construction. Also exposes `getVelocity()`, `setCurrentFieldPosition()`, and `isDoneInitializing()` |
 
-### `subsystems`
-Classes for robot subsystems, such as claws, storage mechanisms, or intakes.
+### `manipulators`
+Base class for robot subsystems.
 
 `Subsystem` extends `Loop` and adds `init(HardwareMap)` and an optional `stop()`. Register subsystems with `Robot.register()` — this calls `init` immediately and schedules `loop`/`stop` automatically.
 

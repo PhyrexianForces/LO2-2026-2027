@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import codebase.actions.Action;
-import codebase.actions.ActionParameter;
-import codebase.actions.SequentialAction;
-import codebase.actions.SimultaneousAction;
-import codebase.geometry.FieldPosition;
+import launchpad.actions.Action;
+import launchpad.actions.ActionParameter;
+import launchpad.actions.SequentialAction;
+import launchpad.actions.SimultaneousAction;
+import launchpad.geometry.FieldPosition;
 
 public class TelemetryUpdatePacket extends TelemetryPacket {
     @SerializedName("telemetryDataName")
@@ -88,13 +88,17 @@ public class TelemetryUpdatePacket extends TelemetryPacket {
         }
 
         private List<Action> getSubActions(Action action) {
+            List<Action> subActions = null;
+
             if (action instanceof SimultaneousAction) {
-                return ((SimultaneousAction) action).getActions();
+                subActions = ((SimultaneousAction) action).getActions();
             } else if (action instanceof SequentialAction) {
-                return ((SequentialAction) action).getActions();
+                subActions = ((SequentialAction) action).getActions();
             }
 
-            return new ArrayList<>();
+            // Both getActions() implementations are @Nullable (SequentialAction returns null
+            // once complete), so this can't just return their result directly.
+            return subActions != null ? subActions : new ArrayList<>();
         }
 
         private TelemetryAction getTelemetryActionFromAction(Action action) throws IllegalAccessException {

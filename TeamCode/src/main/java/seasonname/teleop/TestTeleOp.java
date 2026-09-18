@@ -3,15 +3,14 @@ package seasonname.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-import codebase.Constants;
-import codebase.gamepad.Gamepad;
-import codebase.geometry.FieldPosition;
-import codebase.hardware.PinpointModule;
-
-import codebase.pathing.PinpointLocalizer;
 import codebase.telemetry_viewer.TelemetryOpMode;
 import codebase.telemetry_viewer.websocket.RobotPosition;
 import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.Constants;
+import launchpad.gamepad.Gamepad;
+import launchpad.geometry.FieldPosition;
+import launchpad.hardware.PinpointModule;
+import launchpad.pathing.PinpointLocalizer;
 
 @TeleOp(name = "Test TeleOp")
 public class TestTeleOp extends TelemetryOpMode {
