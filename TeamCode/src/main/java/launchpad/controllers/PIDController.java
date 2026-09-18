@@ -20,6 +20,7 @@ public class PIDController implements Controller {
     private double lastTime = 0;
     @TelemetryData
     private double lastDerivative = 0;
+
     /** The power returned by the last getPower() call, cached for telemetry so display doesn't need a second (state-corrupting) call. */
     @TelemetryData
     private double lastPower = 0;

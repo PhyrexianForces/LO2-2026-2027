@@ -23,11 +23,8 @@ public class SigmoidController implements Controller {
         this(power, steepness, () -> targetPosition.get() - currentPosition.get());
     }
 
-    // Named "output" to avoid colliding with the "power" coefficient field's telemetry name.
-    // Safe to annotate directly: unlike PIDController, this is a pure computation with no
-    // mutated state, so an extra reflective call per telemetry loop has no side effects.
     @Override
-    @TelemetryData("output")
+    @TelemetryData("Output")
     public double getPower() {
         return power * 2 * ((1 / (1 + Math.pow(Math.E, -errorSupplier.get() * steepness))) - 0.5);
     }

@@ -1,4 +1,4 @@
-package seasonname.teleop;
+package opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,8 +12,8 @@ import launchpad.geometry.FieldPosition;
 import launchpad.hardware.PinpointModule;
 import launchpad.pathing.PinpointLocalizer;
 
-@TeleOp(name = "Test TeleOp")
-public class TestTeleOp extends TelemetryOpMode {
+@TeleOp(name = "Telemetry Test TeleOp")
+public class TelemetryTestTeleop extends TelemetryOpMode {
 
     @TelemetryData public float lx = 0.0f;
     @TelemetryData public float ly = 0.0f;
