@@ -29,12 +29,13 @@ public abstract class TeleopBase extends TelemetryOpMode {
 
     @Override
     public void loop() {
-        super.loop();
-
         mainGamepad.loop();
         secondaryGamepad.loop();
         runningActions.loop();
         robot.loop();
+
+        // Do this last, so telemetry is up to date
+        super.loop();
     }
 
     @Override

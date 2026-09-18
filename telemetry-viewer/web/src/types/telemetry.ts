@@ -5,7 +5,7 @@ export interface HardwareDevice {
   version: number;
 }
 
-export type OpModeType = 'AUTONOMOUS' | 'TELE_OP';
+export type OpModeType = 'AUTONOMOUS' | 'TELEOP';
 
 export interface ConnectionInfo {
   opModeName: string;

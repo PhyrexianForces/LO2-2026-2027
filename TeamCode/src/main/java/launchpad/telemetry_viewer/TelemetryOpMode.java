@@ -24,6 +24,8 @@ public abstract class TelemetryOpMode extends OpMode {
 
     @Override
     public void stop() {
+        if (telemetryServer == null) return;
         try { telemetryServer.stop(); } catch (Exception ignored) {}
+        telemetryServer = null;
     }
 }

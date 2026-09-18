@@ -39,7 +39,6 @@ public class TelemetryTestTeleop extends TelemetryOpMode {
 
     @Override
     public void loop() {
-        super.loop();
         gamepad.loop();
 
         lx = gamepad.leftJoystick.getX();
@@ -50,6 +49,8 @@ public class TelemetryTestTeleop extends TelemetryOpMode {
         localizer.loop();
 
         currentPosition = localizer.getCurrentPosition();
+
+        super.loop();
     }
 
     @Override

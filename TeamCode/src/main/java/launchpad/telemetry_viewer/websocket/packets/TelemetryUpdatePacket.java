@@ -106,12 +106,15 @@ public class TelemetryUpdatePacket extends TelemetryPacket {
             List<String> actionParameters = new ArrayList<>();
 
             telemetryAction.actionName = action.getClass().getSimpleName();
-            for (Field field : action.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(ActionParameter.class)) {
-                    field.setAccessible(true);
-                    Object value = field.get(action);
-                    String parameterValue = value == null ? "null" : value.toString();
-                    actionParameters.add(parameterValue.isEmpty() ? "(null)" : parameterValue);
+            // Walk up the hierarchy so parameters declared on an action base class are included.
+            for (Class<?> clazz = action.getClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (field.isAnnotationPresent(ActionParameter.class)) {
+                        field.setAccessible(true);
+                        Object value = field.get(action);
+                        String parameterValue = value == null ? "null" : value.toString();
+                        actionParameters.add(parameterValue.isEmpty() ? "(null)" : parameterValue);
+                    }
                 }
             }
 
