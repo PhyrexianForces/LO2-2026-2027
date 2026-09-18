@@ -2,6 +2,7 @@ package codebase.pathing;
 
 import codebase.Loop;
 import codebase.geometry.FieldPosition;
+import codebase.telemetry_viewer.websocket.RobotPosition;
 
 /**
  * Team 4096 Localization System
@@ -11,6 +12,7 @@ import codebase.geometry.FieldPosition;
  */
 public interface Localizer extends Loop {
 
+    @RobotPosition
     FieldPosition getCurrentPosition();
 
     void init();

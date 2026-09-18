@@ -1,8 +1,22 @@
-import type { TelemetryDataMap } from '../types/telemetry';
+import type { FieldPosition, TelemetryDataMap } from '../types/telemetry';
 import { useTheme } from '../theme';
 
 interface Props {
   telemetryData: TelemetryDataMap;
+}
+
+function isFieldPosition(value: unknown): value is FieldPosition {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'x' in value &&
+    'y' in value &&
+    'direction' in value
+  );
+}
+
+function formatFieldPosition(position: FieldPosition): string {
+  return `(${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.direction.toFixed(2)} rad)`;
 }
 
 export function TelemetryDataPanel({ telemetryData }: Props) {
@@ -28,6 +42,8 @@ export function TelemetryDataPanel({ telemetryData }: Props) {
                 ? 'null'
                 : typeof value === 'number'
                 ? value.toFixed(4)
+                : isFieldPosition(value)
+                ? formatFieldPosition(value)
                 : String(value)}
             </span>
           </div>

@@ -6,6 +6,10 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.Locale;
+
+import codebase.telemetry_viewer.websocket.TelemetryData;
+
 public class ColorSensor {
     private final RevColorSensorV3 sensor;
 
@@ -25,6 +29,11 @@ public class ColorSensor {
         }
 
         return new Color(sensor.red() / magnitude, sensor.green() / magnitude, sensor.blue() / magnitude);
+    }
+
+    @TelemetryData
+    public String getColorTelemetry() {
+        return getColor().toString();
     }
 
     /**
@@ -54,7 +63,7 @@ public class ColorSensor {
         @NonNull
         @Override
         public String toString() {
-            return red + ", " + green + ", " + blue;
+            return String.format(Locale.getDefault(), "R:%.2f G:%.2f B:%.2f", red, green, blue);
         }
     }
 }

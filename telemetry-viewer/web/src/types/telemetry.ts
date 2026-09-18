@@ -29,7 +29,7 @@ export interface ActionQueue {
   actionQueue: TelemetryAction[];
 }
 
-export type TelemetryDataType = 'double' | 'string' | 'integer' | 'fieldPosition';
+export type TelemetryDataType = 'double' | 'string' | 'integer' | 'fieldPosition' | 'robotPosition';
 
 export interface TelemetryDataEntry {
   type: TelemetryDataType;

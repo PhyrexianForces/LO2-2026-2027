@@ -69,6 +69,13 @@ export function useTelemetrySocket() {
           const { telemetryDataName, telemetryDataType, telemetryDataValue } = packet;
           if (telemetryDataType === 'robotPosition') {
             setFieldPosition(telemetryDataValue as FieldPosition);
+            setTelemetryData(prev => ({
+              ...prev,
+              [telemetryDataName]: {
+                type: 'robotPosition',
+                value: telemetryDataValue as FieldPosition | null,
+              },
+            }));
           } else if (telemetryDataType === 'actionQueue') {
             setActionQueue(telemetryDataValue as ActionQueue);
           } else {

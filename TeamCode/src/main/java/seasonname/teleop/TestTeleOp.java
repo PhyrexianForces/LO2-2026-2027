@@ -21,7 +21,7 @@ public class TestTeleOp extends TelemetryOpMode {
     @TelemetryData public float rx = 0.0f;
     @TelemetryData public float ryNew = 0.0f;
 
-    @TelemetryData @RobotPosition
+    @RobotPosition
     public FieldPosition currentPosition = new FieldPosition(0, 0, 0);
 
     private Gamepad gamepad;
