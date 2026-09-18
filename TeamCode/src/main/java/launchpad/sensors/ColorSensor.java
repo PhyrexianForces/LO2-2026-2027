@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Locale;
 
-import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 
 public class ColorSensor {
     private final RevColorSensorV3 sensor;

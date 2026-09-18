@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import codebase.telemetry_viewer.websocket.TelemetryData;
-import codebase.telemetry_viewer.websocket.TelemetryObject;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryObject;
 import launchpad.geometry.FieldPosition;
 import launchpad.geometry.MovementVector;
 import launchpad.hardware.Motor;

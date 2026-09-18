@@ -3,9 +3,9 @@ package seasonname.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-import codebase.telemetry_viewer.TelemetryOpMode;
-import codebase.telemetry_viewer.websocket.RobotPosition;
-import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.TelemetryOpMode;
+import launchpad.telemetry_viewer.websocket.RobotPosition;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 import launchpad.Constants;
 import launchpad.gamepad.Gamepad;
 import launchpad.geometry.FieldPosition;

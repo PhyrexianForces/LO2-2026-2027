@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import java.util.function.Supplier;
 
-import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 
 public class PIDController implements Controller {
 

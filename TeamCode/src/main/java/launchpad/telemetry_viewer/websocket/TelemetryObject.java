@@ -1,4 +1,4 @@
-package codebase.telemetry_viewer.websocket;
+package launchpad.telemetry_viewer.websocket;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

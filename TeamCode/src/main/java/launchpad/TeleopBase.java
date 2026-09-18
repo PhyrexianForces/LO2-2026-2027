@@ -1,11 +1,12 @@
 package launchpad;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import launchpad.actions.SimultaneousAction;
 import launchpad.gamepad.Gamepad;
+import launchpad.telemetry_viewer.TelemetryOpMode;
+import launchpad.telemetry_viewer.websocket.TelemetryObject;
 
-public abstract class TeleopBase extends OpMode {
+public abstract class TeleopBase extends TelemetryOpMode {
+    @TelemetryObject
     protected Robot robot;
     protected Gamepad mainGamepad;
     protected Gamepad secondaryGamepad;
@@ -14,6 +15,8 @@ public abstract class TeleopBase extends OpMode {
 
     @Override
     public void init() {
+        super.init();
+
         robot = new Robot(hardwareMap);
         mainGamepad = new Gamepad(this.gamepad1);
         secondaryGamepad = new Gamepad(this.gamepad2);
@@ -26,6 +29,8 @@ public abstract class TeleopBase extends OpMode {
 
     @Override
     public void loop() {
+        super.loop();
+
         mainGamepad.loop();
         secondaryGamepad.loop();
         runningActions.loop();
@@ -34,6 +39,8 @@ public abstract class TeleopBase extends OpMode {
 
     @Override
     public void stop() {
+        super.stop();
+
         robot.stop();
     }
 }

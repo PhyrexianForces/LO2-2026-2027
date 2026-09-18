@@ -1,4 +1,4 @@
-package codebase.telemetry_viewer.websocket;
+package launchpad.telemetry_viewer.websocket;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -12,12 +12,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import codebase.telemetry_viewer.websocket.packets.TelemetryNewConnectionPacket;
-import codebase.telemetry_viewer.websocket.packets.TelemetryUpdatePacket;
+import launchpad.telemetry_viewer.websocket.packets.TelemetryNewConnectionPacket;
+import launchpad.telemetry_viewer.websocket.packets.TelemetryUpdatePacket;
 import launchpad.Loop;
 import launchpad.actions.SequentialAction;
 import launchpad.geometry.FieldPosition;
@@ -206,12 +207,31 @@ public class TelemetryServer extends WebSocketServer implements Loop {
         try {
             Object nested = target.getValue();
             if (nested != null) {
-                scanObject(nested);
+                scanTelemetryObjectValue(nested);
             } else {
                 pendingTelemetryObjectTargets.add(target);
             }
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * A {@code @TelemetryObject} value that's a Collection (e.g. Robot's registered Subsystems)
+     * is scanned element-by-element instead of as a single object, since scanning the
+     * Collection's own fields (ArrayList internals, etc.) would find nothing useful. Elements
+     * are scanned as they exist when this runs; elements added to the collection later aren't
+     * picked up retroactively, same as any other already-resolved @TelemetryObject.
+     */
+    private void scanTelemetryObjectValue(Object value) {
+        if (value instanceof Collection<?>) {
+            for (Object element : (Collection<?>) value) {
+                if (element != null) {
+                    scanObject(element);
+                }
+            }
+        } else {
+            scanObject(value);
         }
     }
 
@@ -240,7 +260,7 @@ public class TelemetryServer extends WebSocketServer implements Loop {
         // scanning a newly-resolved object can itself queue more pending targets.
         for (TelemetryTarget target : nowResolved) {
             try {
-                scanObject(target.getValue());
+                scanTelemetryObjectValue(target.getValue());
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }

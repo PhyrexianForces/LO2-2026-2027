@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.function.Supplier;
 
-import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 
 public class SigmoidController implements Controller {
     @TelemetryData

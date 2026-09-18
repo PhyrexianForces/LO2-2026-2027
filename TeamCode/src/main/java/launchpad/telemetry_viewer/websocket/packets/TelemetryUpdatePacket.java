@@ -1,4 +1,4 @@
-package codebase.telemetry_viewer.websocket.packets;
+package launchpad.telemetry_viewer.websocket.packets;
 
 import com.google.gson.annotations.SerializedName;
 

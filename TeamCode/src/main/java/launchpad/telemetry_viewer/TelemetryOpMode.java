@@ -1,8 +1,8 @@
-package codebase.telemetry_viewer;
+package launchpad.telemetry_viewer;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import codebase.telemetry_viewer.websocket.TelemetryServer;
+import launchpad.telemetry_viewer.websocket.TelemetryServer;
 
 public abstract class TelemetryOpMode extends OpMode {
     private static TelemetryServer telemetryServer;

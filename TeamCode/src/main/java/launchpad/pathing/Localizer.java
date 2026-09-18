@@ -1,6 +1,6 @@
 package launchpad.pathing;
 
-import codebase.telemetry_viewer.websocket.RobotPosition;
+import launchpad.telemetry_viewer.websocket.RobotPosition;
 import launchpad.Loop;
 import launchpad.geometry.FieldPosition;
 

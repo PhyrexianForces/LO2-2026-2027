@@ -1,6 +1,6 @@
 package launchpad.controllers;
 
-import codebase.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 
 public interface Controller {
     double getPower();
