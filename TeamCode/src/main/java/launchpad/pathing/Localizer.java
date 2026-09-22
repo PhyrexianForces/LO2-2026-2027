@@ -1,5 +1,6 @@
 package launchpad.pathing;
 
+import launchpad.telemetry_viewer.websocket.RobotPosition;
 import launchpad.Loop;
 import launchpad.geometry.FieldPosition;
 
@@ -11,6 +12,7 @@ import launchpad.geometry.FieldPosition;
  */
 public interface Localizer extends Loop {
 
+    @RobotPosition
     FieldPosition getCurrentPosition();
 
     void init();

@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import launchpad.subsystems.Subsystem;
+import launchpad.telemetry_viewer.websocket.TelemetryObject;
 
 public class Robot {
+    @TelemetryObject
     private final List<Subsystem> subsystems = new ArrayList<>();
     private final HardwareMap hardwareMap;
 

@@ -1,6 +1,5 @@
 package launchpad;
 
-
 import launchpad.hardware.MotorConfig;
 import launchpad.movement.mecanum.MecanumCoefficientMatrix;
 import launchpad.movement.mecanum.MecanumCoefficientSet;
