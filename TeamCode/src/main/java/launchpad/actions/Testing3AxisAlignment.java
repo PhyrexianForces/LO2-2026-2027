@@ -57,8 +57,8 @@ public class Testing3AxisAlignment implements Action {
         double rotationalError = Angles.angleDifference(localizer.getCurrentPosition().direction, destination.direction);
 
         double velocityX = xError;
-        double velocityY = yError * (velocityX / xError);
-        double velocityRotational = rotationalError * (velocityX / xError);
+        double velocityY = yError;
+        double velocityRotational = rotationalError;
 
         MovementVector vector = new MovementVector(
                 velocityX,
