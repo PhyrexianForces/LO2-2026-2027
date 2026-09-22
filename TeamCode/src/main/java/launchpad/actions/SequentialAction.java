@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SequentialAction implements Action {
@@ -68,5 +69,15 @@ public class SequentialAction implements Action {
             return null;
         }
         return actions;
+    }
+
+    /** Every action in this sequence, finished ones included, in order. */
+    public List<Action> getAllActions() {
+        return Collections.unmodifiableList(actions);
+    }
+
+    /** Index of the running action; equals the action count once the sequence is complete. */
+    public int getCurrentIndex() {
+        return currentIndex;
     }
 }

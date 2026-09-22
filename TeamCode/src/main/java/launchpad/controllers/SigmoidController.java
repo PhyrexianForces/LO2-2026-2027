@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 
 import java.util.function.Supplier;
 
+import launchpad.telemetry_viewer.websocket.TelemetryData;
+
 public class SigmoidController implements Controller {
+    @TelemetryData
     private final double power;
+    @TelemetryData
     private final double steepness;
     private final Supplier<Double> errorSupplier;
 
@@ -20,6 +24,7 @@ public class SigmoidController implements Controller {
     }
 
     @Override
+    @TelemetryData("Output")
     public double getPower() {
         return power * 2 * ((1 / (1 + Math.pow(Math.E, -errorSupplier.get() * steepness))) - 0.5);
     }

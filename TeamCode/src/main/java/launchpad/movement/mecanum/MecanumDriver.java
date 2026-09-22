@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import launchpad.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryObject;
 import launchpad.geometry.FieldPosition;
 import launchpad.geometry.MovementVector;
 import launchpad.hardware.Motor;
@@ -15,10 +17,13 @@ import launchpad.hardware.Motor;
  * Relative movement refers to robot-centric movement. For example, a positive vertical means "forwards" for the robot.
  */
 public class MecanumDriver {
-    public final Motor fl;
-    public final Motor fr;
-    public final Motor bl;
-    public final Motor br;
+    public enum ControlMode { POWER, VELOCITY }
+    public enum MovementFrame { ABSOLUTE, RELATIVE }
+
+    @TelemetryObject final Motor fl;
+    @TelemetryObject final Motor fr;
+    @TelemetryObject final Motor bl;
+    @TelemetryObject final Motor br;
     /** Coefficient matrix for mecanum drive adjustments. */
     public final MecanumCoefficientMatrix mecanumDriveCoefficients;
     /** Maximum allowable wheel velocity in inches per second. */
@@ -41,6 +46,14 @@ public class MecanumDriver {
      * reliably hit.
      */
     private final double minWheelVelocity;
+
+    /** The vector last passed to a set*Power/set*Velocity call, in whichever frame it was given. */
+    @TelemetryData
+    private MovementVector currentMovementVector = new MovementVector(0, 0, 0);
+    @TelemetryData
+    private ControlMode currentControlMode = ControlMode.POWER;
+    @TelemetryData
+    private MovementFrame currentMovementFrame = MovementFrame.RELATIVE;
 
     /**
      * Constructs a MecanumDriver with the specified motors, coefficient matrix, and wheel velocity limits.
@@ -155,6 +168,14 @@ public class MecanumDriver {
      * @param powerInput MovementVector containing normalized power inputs (-1 to 1).
      */
     public void setRelativePower(MovementVector powerInput) {
+        currentMovementVector = powerInput;
+        currentControlMode = ControlMode.POWER;
+        currentMovementFrame = MovementFrame.RELATIVE;
+
+        applyRelativePower(powerInput);
+    }
+
+    private void applyRelativePower(MovementVector powerInput) {
         MecanumCoefficientSet coefficientSet = this.mecanumDriveCoefficients.calculateCoefficientsWithPower(
                 powerInput.getVerticalVelocity(),
                 powerInput.getHorizontalVelocity(),
@@ -230,6 +251,21 @@ public class MecanumDriver {
             throw new IllegalStateException("Can not set velocity without first setting maxWheelVelocity");
         }
 
+        currentMovementVector = velocity;
+        currentControlMode = ControlMode.VELOCITY;
+        currentMovementFrame = MovementFrame.RELATIVE;
+
+        return applyRelativeVelocity(velocity);
+    }
+
+    /**
+     * Applies a robot-relative velocity command without recording it as the current movement
+     * vector, so callers that transform a command first (e.g. field-relative) can report the
+     * original.
+     *
+     * @return the factor the command was scaled by, as described by {@link #setRelativeVelocity}.
+     */
+    private double applyRelativeVelocity(MovementVector velocity) {
         MecanumCoefficientSet requested = coefficientsFor(velocity);
         MecanumCoefficientSet commanded = requested
                 .upScale(minWheelVelocity)
@@ -254,6 +290,10 @@ public class MecanumDriver {
      * @param powerInput MovementVector containing absolute power inputs (-1 to 1). (vertical - x, horizontal - y)
      */
     public void setAbsolutePower(FieldPosition position, MovementVector powerInput) {
+        currentMovementVector = powerInput;
+        currentControlMode = ControlMode.POWER;
+        currentMovementFrame = MovementFrame.ABSOLUTE;
+
         double direction = position.direction;
 
         double relativeVerticalPower = Math.cos(direction) * powerInput.getVerticalVelocity() + Math.sin(direction) * powerInput.getHorizontalVelocity();
@@ -265,7 +305,7 @@ public class MecanumDriver {
                 powerInput.getRotationalVelocity()
         );
 
-        this.setRelativePower(relativePower);
+        applyRelativePower(relativePower);
     }
 
     /**
@@ -280,6 +320,10 @@ public class MecanumDriver {
             throw new IllegalStateException("Can not set velocity without first setting maxWheelVelocity");
         }
 
+        currentMovementVector = velocity;
+        currentControlMode = ControlMode.VELOCITY;
+        currentMovementFrame = MovementFrame.ABSOLUTE;
+
         double direction = position.direction;
 
         double relativeVerticalVelocity = Math.cos(direction) * velocity.getVerticalVelocity() + Math.sin(direction) * velocity.getHorizontalVelocity();
@@ -291,7 +335,7 @@ public class MecanumDriver {
                 velocity.getRotationalVelocity()
         );
 
-        return this.setRelativeVelocity(relativeVelocity);
+        return applyRelativeVelocity(relativeVelocity);
     }
 
     /**

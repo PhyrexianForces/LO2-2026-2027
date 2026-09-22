@@ -2,6 +2,7 @@ package launchpad.actions;
 
 public class SleepAction implements Action {
 
+    @ActionParameter
     private final long ms;
 
     private long endMs = Long.MAX_VALUE;

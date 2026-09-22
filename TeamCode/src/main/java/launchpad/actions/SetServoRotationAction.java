@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SetServoRotationAction extends RunOnceAction {
 
     private final Servo servo;
+
+    @ActionParameter
     private final double position;
 
     /**

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 import launchpad.geometry.Angles;
 
 public class MotorEncoder implements Encoder {
@@ -16,6 +17,7 @@ public class MotorEncoder implements Encoder {
         this.encoder.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
+    @TelemetryData
     public int getTicks() {
         return this.encoder.getCurrentPosition();
     }
@@ -24,6 +26,7 @@ public class MotorEncoder implements Encoder {
      * Gets the encoder position in radians.
      * @return The position of the encoder in radians.
      */
+    @TelemetryData
     public double getPosition() {
         return Angles.normalizeAngle((getTicks() / ticksPerRotation) * 2.0 * Math.PI);
     }

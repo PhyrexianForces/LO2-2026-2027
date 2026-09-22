@@ -15,19 +15,24 @@ public class MoveToAction implements Action {
     private final MecanumDriver driver;
     private final Localizer localizer;
 
-    private FieldPosition destination;
+    @ActionParameter
+    private final FieldPosition destination;
 
     /**
      * The speed to move horizontally/vertically or some combination of the two in inches/sec
      */
+    @ActionParameter
     private final double movementSpeedMultiplier;
 
     /**
      * The max rotational speed of the robot in radians/sec
      */
+    @ActionParameter
     private final double rotationalSpeedMultiplier;
 
+    @ActionParameter
     private final double maxDistanceError;
+    @ActionParameter
     private final double maxRotationalError;
 
     private final Controller xController;
@@ -84,10 +89,6 @@ public class MoveToAction implements Action {
     @Override
     public boolean isComplete() {
         return complete;
-    }
-
-    public void setDestination(FieldPosition destination) {
-        this.destination = destination;
     }
 
     public double getErrorY() {

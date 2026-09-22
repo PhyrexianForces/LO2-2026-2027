@@ -7,8 +7,8 @@ import launchpad.sensors.ColorSensor;
 public class ColorSensorDistanceAction implements Action {
 
     private final ColorSensor colorSensor;
-    private final double triggerDistance;
-    private final DistanceMode mode;
+    @ActionParameter final double triggerDistance;
+    @ActionParameter final DistanceMode mode;
 
     public ColorSensorDistanceAction(@NonNull ColorSensor colorSensor, double triggerDistance, @NonNull DistanceMode mode) {
         this.colorSensor = colorSensor;

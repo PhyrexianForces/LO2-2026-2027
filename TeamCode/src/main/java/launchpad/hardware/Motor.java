@@ -5,6 +5,9 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import java.util.Locale;
+
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 import launchpad.sensors.MotorEncoder;
 
 public class Motor {
@@ -77,6 +80,11 @@ public class Motor {
         return motor.getVelocity() / (ticksPerRotation / (wheelDiameter * Math.PI));
     }
 
+    @TelemetryData("Velocity")
+    public String getVelocityTelemetry() {
+        return velocityConfigured ? String.format(Locale.getDefault(), "%.2f in/s", getVelocity()) : "not configured";
+    }
+
     public DcMotorEx getMotor() {
         return motor;
     }
@@ -85,6 +93,7 @@ public class Motor {
         motor.setPower(power);
     }
 
+    @TelemetryData("Power")
     public double getPower() {
         return motor.getPower();
     }
