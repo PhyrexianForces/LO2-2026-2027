@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type {
   ConnectionInfo,
   FieldPosition,
-  ActionQueue,
+  TelemetryActions,
   TelemetryDataMap,
   TelemetryDataType,
 } from '../types/telemetry';
@@ -19,7 +19,7 @@ export function useTelemetrySocket() {
   const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo | null>(null);
   const [telemetryData, setTelemetryData] = useState<TelemetryDataMap>({});
   const [fieldPosition, setFieldPosition] = useState<FieldPosition | null>(null);
-  const [actionQueue, setActionQueue] = useState<ActionQueue | null>(null);
+  const [actions, setActions] = useState<TelemetryActions | null>(null);
   const [ip, setIp] = useState<string>(getDefaultHost() ?? '');
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -64,7 +64,7 @@ export function useTelemetrySocket() {
           });
           setTelemetryData({});
           setFieldPosition(null);
-          setActionQueue(null);
+          setActions(null);
         } else if (packet._packetType === 'TelemetryUpdatePacket') {
           const { telemetryDataName, telemetryDataType, telemetryDataValue } = packet;
           if (telemetryDataType === 'robotPosition') {
@@ -76,8 +76,8 @@ export function useTelemetrySocket() {
                 value: telemetryDataValue as FieldPosition | null,
               },
             }));
-          } else if (telemetryDataType === 'actionQueue') {
-            setActionQueue(telemetryDataValue as ActionQueue);
+          } else if (telemetryDataType === 'actions') {
+            setActions(telemetryDataValue as TelemetryActions);
           } else {
             setTelemetryData(prev => ({
               ...prev,
@@ -110,5 +110,5 @@ export function useTelemetrySocket() {
     };
   }, [connect]);
 
-  return { connected, connectionInfo, telemetryData, fieldPosition, actionQueue, ip, setIp, connect };
+  return { connected, connectionInfo, telemetryData, fieldPosition, actions, ip, setIp, connect };
 }

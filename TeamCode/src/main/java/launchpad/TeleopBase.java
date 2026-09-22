@@ -3,6 +3,7 @@ package launchpad;
 import launchpad.actions.SimultaneousAction;
 import launchpad.gamepad.Gamepad;
 import launchpad.telemetry_viewer.TelemetryOpMode;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
 import launchpad.telemetry_viewer.websocket.TelemetryObject;
 
 public abstract class TeleopBase extends TelemetryOpMode {
@@ -11,6 +12,7 @@ public abstract class TeleopBase extends TelemetryOpMode {
     protected Gamepad mainGamepad;
     protected Gamepad secondaryGamepad;
 
+    @TelemetryData
     protected SimultaneousAction runningActions;
 
     @Override

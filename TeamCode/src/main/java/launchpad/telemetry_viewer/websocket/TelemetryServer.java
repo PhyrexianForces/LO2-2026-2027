@@ -26,7 +26,7 @@ import java.util.Set;
 import launchpad.telemetry_viewer.websocket.packets.TelemetryNewConnectionPacket;
 import launchpad.telemetry_viewer.websocket.packets.TelemetryUpdatePacket;
 import launchpad.Loop;
-import launchpad.actions.SequentialAction;
+import launchpad.actions.Action;
 import launchpad.geometry.FieldPosition;
 
 public class TelemetryServer extends WebSocketServer implements Loop {
@@ -112,6 +112,8 @@ public class TelemetryServer extends WebSocketServer implements Loop {
         final String baseName;
         final boolean isRobotPosition;
         String displayName;
+        /** Created on first use for targets whose value is an Action. */
+        ActionTelemetryTracker actionTracker;
 
         RegisteredTarget(TelemetryTarget target, String path, String baseName, boolean isRobotPosition) {
             this.target = target;
@@ -416,9 +418,12 @@ public class TelemetryServer extends WebSocketServer implements Loop {
             if (fieldValue != null) {
                 packet.telemetryDataValue = new TelemetryUpdatePacket.TelemetryFieldPosition((FieldPosition) fieldValue);
             }
-        } else if (fieldType == SequentialAction.class) {
-            packet.telemetryDataType = TelemetryUpdatePacket.TelemetryDataType.ACTION_QUEUE;
-            packet.telemetryDataValue = new TelemetryUpdatePacket.TelemetryActionQueue((SequentialAction) fieldValue);
+        } else if (Action.class.isAssignableFrom(fieldType)) {
+            packet.telemetryDataType = TelemetryUpdatePacket.TelemetryDataType.ACTIONS;
+            if (registered.actionTracker == null) {
+                registered.actionTracker = new ActionTelemetryTracker();
+            }
+            packet.telemetryDataValue = registered.actionTracker.snapshot((Action) fieldValue);
         } else {
             packet.telemetryDataType = TelemetryUpdatePacket.TelemetryDataType.STRING;
             if (fieldValue != null) {

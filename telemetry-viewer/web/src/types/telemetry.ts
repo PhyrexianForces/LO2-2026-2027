@@ -19,14 +19,17 @@ export interface FieldPosition {
   direction: number;
 }
 
+export type ActionStatus = 'queued' | 'running' | 'completed' | 'cancelled';
+
 export interface TelemetryAction {
   actionName: string;
   actionParameters: string;
+  status: ActionStatus;
   subActions: TelemetryAction[];
 }
 
-export interface ActionQueue {
-  actionQueue: TelemetryAction[];
+export interface TelemetryActions {
+  actions: TelemetryAction[];
 }
 
 export type TelemetryDataType = 'double' | 'string' | 'integer' | 'fieldPosition' | 'robotPosition';
@@ -42,7 +45,7 @@ export interface TelemetryUpdatePacket {
   _packetType: 'TelemetryUpdatePacket';
   telemetryDataName: string;
   telemetryDataType: string;
-  telemetryDataValue: number | string | FieldPosition | ActionQueue | null;
+  telemetryDataValue: number | string | FieldPosition | TelemetryActions | null;
 }
 
 export interface TelemetryNewConnectionPacket {

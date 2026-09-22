@@ -4,7 +4,7 @@ import { ConnectionPanel } from './components/ConnectionPanel';
 import { TelemetryDataPanel } from './components/TelemetryDataPanel';
 import { RobotInfoPanel } from './components/RobotInfoPanel';
 import { FieldViewer3D } from './components/FieldViewer3D';
-import { ActionQueuePanel } from './components/ActionQueuePanel';
+import { ActionsPanel } from './components/ActionsPanel';
 import { useTheme } from './theme';
 
 export function App() {
@@ -13,7 +13,7 @@ export function App() {
     connectionInfo,
     telemetryData,
     fieldPosition,
-    actionQueue,
+    actions,
     ip,
     setIp,
     connect,
@@ -55,7 +55,7 @@ export function App() {
         <TelemetryDataPanel telemetryData={telemetryData} />
         <FieldViewer3D fieldPosition={fieldPosition} />
         <RobotInfoPanel connectionInfo={connectionInfo} />
-        <ActionQueuePanel actionQueue={actionQueue} />
+        <ActionsPanel actions={actions} />
       </div>
     </div>
   );
