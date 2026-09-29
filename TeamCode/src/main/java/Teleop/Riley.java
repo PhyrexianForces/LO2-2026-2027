@@ -19,6 +19,7 @@ public class Riley extends OpMode{
   private DcMotorEx frontLeft, frontRight, backLeft, backRight;
   //Slowdown variable
   public double slowDown = 0.5;
+  private static final boolean useWebcam = true;
   
   @Override
   public void init() {
