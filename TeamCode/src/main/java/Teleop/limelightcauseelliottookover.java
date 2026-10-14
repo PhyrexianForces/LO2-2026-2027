@@ -12,6 +12,15 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+LimeLight3A limelight;
+@override
+ public void init() {
+     limelight = hardwareMap.get(Limelight3A.class, "limelight");
+     limelight.setPollRateHz(100);
+     limelight.start();
+}   
+ 
+
 import java.lang.Math;
 
 @TeleOp
