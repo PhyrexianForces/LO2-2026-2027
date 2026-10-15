@@ -12,6 +12,34 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+@TeleOp
+public class SimpleLilelightOpMode extends OpMode {
+  Limelight 3A limelight 3A;
+  @Override
+  public void init () {
+    limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+    }
+      public void start () {
+        limelight3A.pipelineSwitch(0);
+        limelight3A.start ();
+      }
+  
+      @Override
+      public void loop() {
+        LLResult llresult = limelight3A.getLatestResult();
+        if(llResult != null && llResult.isValid()){
+          telemetry.addData("Tx", llResult.getTx());
+          telemetry.addData("Ty", llResult.getTy());
+          telemetry.addData("Ta", llResult.getTa());
+        }
+        else{
+          telemetry.addLine("noneFound");
+        }
+      }
+}
+          
+  
+
 import java.lang.Math;
 
 @TeleOp
