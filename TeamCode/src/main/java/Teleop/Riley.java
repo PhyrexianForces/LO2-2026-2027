@@ -11,35 +11,6 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-
-@TeleOp
-public class SimpleLilelightOpMode extends OpMode {
-  Limelight 3A limelight 3A;
-  @Override
-  public void init () {
-    limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
-    }
-      public void start () {
-        limelight3A.pipelineSwitch(0);
-        limelight3A.start ();
-      }
-  
-      @Override
-      public void loop() {
-        LLResult llresult = limelight3A.getLatestResult();
-        if(llResult != null && llResult.isValid()){
-          telemetry.addData("Tx", llResult.getTx());
-          telemetry.addData("Ty", llResult.getTy());
-          telemetry.addData("Ta", llResult.getTa());
-        }
-        else{
-          telemetry.addLine("noneFound");
-        }
-      }
-}
-          
-  
-
 import java.lang.Math;
 
 @TeleOp
@@ -48,6 +19,8 @@ public class Riley extends OpMode{
   //Slowdown variable
   public double slowDown = 0.5;
   private static final boolean useWebcam = true;
+
+  Limelight 3A limelight 3A;
   
   @Override
   public void init() {
@@ -70,6 +43,12 @@ public class Riley extends OpMode{
     backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+    limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+    }
+      public void start () {
+        limelight3A.pipelineSwitch(0);
+        limelight3A.start ();
   }
 
   public void driveOmni(double y, double rx, double x, double slowDown) {
@@ -98,6 +77,15 @@ public class Riley extends OpMode{
 
   @Override
   public void loop() {
+     LLResult llresult = limelight3A.getLatestResult();
+      if(llResult != null && llResult.isValid()){
+        telemetry.addData("Tx", llResult.getTx());
+        telemetry.addData("Ty", llResult.getTy());
+        telemetry.addData("Ta", llResult.getTa());
+    }
+    else{
+          telemetry.addLine("noneFound");
+    }
     //Determines the inputs of the gamepad
     double y = -gamepad1.left_stick_y;
     double x = gamepad1.left_stick_x;
