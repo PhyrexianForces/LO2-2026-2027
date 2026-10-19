@@ -2,25 +2,21 @@ package Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 //Limelight
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.lang.Math;
 
 @TeleOp
-public class Riley extends OpMode{
+public class LO2Leop extends OpMode{
   private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
   //Slowdown variable
   public double slowDown = 0.5;
   private static final boolean useWebcam = true;
 
-  Limelight 3A limelight 3A;
+  Limelight3A limelight3A;
   
   @Override
   public void init() {
@@ -78,10 +74,10 @@ public class Riley extends OpMode{
   @Override
   public void loop() {
      LLResult llresult = limelight3A.getLatestResult();
-      if(llResult != null && llResult.isValid()){
-        telemetry.addData("Tx", llResult.getTx());
-        telemetry.addData("Ty", llResult.getTy());
-        telemetry.addData("Ta", llResult.getTa());
+      if(llresult != null && llresult.isValid()){
+        telemetry.addData("Tx", llresult.getTx());
+        telemetry.addData("Ty", llresult.getTy());
+        telemetry.addData("Ta", llresult.getTa());
     }
     else{
           telemetry.addLine("noneFound");
