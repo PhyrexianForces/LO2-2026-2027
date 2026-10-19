@@ -7,13 +7,16 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 //Limelight
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+
 import java.lang.Math;
 
 @TeleOp
 public class LO2leop extends OpMode{
   private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
   private static final boolean useWebcam = true;
-
+  int pipeline = 0;
   Limelight3A limelight3A;
   /*
   Pipeline 0: returns blue pollen
@@ -47,8 +50,9 @@ public class LO2leop extends OpMode{
   }
 
   //Triggers on robot startup
-  public void start () {
+  public void start() {
     limelight3A.pipelineSwitch(0);
+    pipeline = 0;
     limelight3A.start();
   }
 
@@ -67,22 +71,24 @@ public class LO2leop extends OpMode{
     frontRight.setVelocity(frPower * MTPS);
     backLeft.setVelocity(blPower * MTPS);
     backRight.setVelocity(brPower * MTPS);
-
   }
-
 
 
   @Override
   public void loop() {
      LLResult llResult = limelight3A.getLatestResult();
-      if(llResult != null && llResult.isValid()){
-        telemetry.addData("Tx", llResult.getTx());
-        telemetry.addData("Ty", llResult.getTy());
-        telemetry.addData("Ta", llResult.getTa());
-    }
-    else{
-          telemetry.addLine("noneFound");
-    }
+       if (llResult != null && llResult.isValid()) {
+         if (pipeline <= 1) {
+           telemetry.addData("Tx", llResult.getTx());
+           telemetry.addData("Ty", llResult.getTy());
+           telemetry.addData("Ta", llResult.getTa());
+         } else {
+           Pose3D pose3D = llResult.getBotpose();
+           telemetry.addData("Bot Pose", pose3D);
+         }
+       } else {
+         telemetry.addLine("noneFound");
+       }
     //Determines the inputs of the gamepad
     double y = -gamepad1.left_stick_y;
     double x = gamepad1.left_stick_x;

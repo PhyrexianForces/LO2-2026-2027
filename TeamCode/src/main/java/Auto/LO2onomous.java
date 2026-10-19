@@ -43,7 +43,7 @@ public class LO2onomous extends OpMode {
     }
 
     //Triggers on robot startup
-    public void start () {
+    public void start() {
         limelight3A.pipelineSwitch(0);
         limelight3A.start();
     }
