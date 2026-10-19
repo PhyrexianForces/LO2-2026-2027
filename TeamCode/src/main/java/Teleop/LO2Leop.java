@@ -12,11 +12,14 @@ import java.lang.Math;
 @TeleOp
 public class LO2Leop extends OpMode{
   private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
-  //Slowdown variable
-  public double slowDown = 0.5;
   private static final boolean useWebcam = true;
 
   Limelight3A limelight3A;
+  /*
+  Pipeline 0: returns blue pollen
+  Pipeline 1: returns red pollen
+  Pipeline 2: returns AprilTag locations
+  */
   
   @Override
   public void init() {
@@ -41,13 +44,15 @@ public class LO2Leop extends OpMode{
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
     limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
-    }
-      public void start () {
-        limelight3A.pipelineSwitch(0);
-        limelight3A.start ();
   }
 
-  public void driveOmni(double y, double rx, double x, double slowDown) {
+  //Triggers on robot startup
+  public void start () {
+    limelight3A.pipelineSwitch(0);
+    limelight3A.start();
+  }
+
+  public void driveOmni(double y, double rx, double x) {
     final double MTPS = 4661;
     //Finds the greatest, positive, not float value among x, y, and rx
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
@@ -57,10 +62,6 @@ public class LO2Leop extends OpMode{
     double blPower = (y - x + rx) / maxValue;
     double frPower = (y - x - rx) / maxValue;
     double brPower = (y + x - rx) / maxValue;
-
-    telemetry.addLine(String.valueOf(slowDown));
-    telemetry.addLine(String.valueOf(slowDown * flPower * MTPS));
-    telemetry.addLine(String.valueOf(flPower * MTPS));
 
     frontLeft.setVelocity(flPower * MTPS);
     frontRight.setVelocity(frPower * MTPS);
@@ -73,11 +74,11 @@ public class LO2Leop extends OpMode{
 
   @Override
   public void loop() {
-     LLResult llresult = limelight3A.getLatestResult();
-      if(llresult != null && llresult.isValid()){
-        telemetry.addData("Tx", llresult.getTx());
-        telemetry.addData("Ty", llresult.getTy());
-        telemetry.addData("Ta", llresult.getTa());
+     LLResult llResult = limelight3A.getLatestResult();
+      if(llResult != null && llResult.isValid()){
+        telemetry.addData("Tx", llResult.getTx());
+        telemetry.addData("Ty", llResult.getTy());
+        telemetry.addData("Ta", llResult.getTa());
     }
     else{
           telemetry.addLine("noneFound");
@@ -91,11 +92,6 @@ public class LO2Leop extends OpMode{
     } else {
       intakeMotor.setPower(0);
     }
-    if (gamepad1.x) {
-      slowDown = 0.25;
-    } else {
-      slowDown = 1;
-    }
-    driveOmni(y, rx, x, slowDown);
+    driveOmni(y, rx, x);
    }
 }
