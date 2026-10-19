@@ -10,7 +10,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.lang.Math;
 
 @TeleOp
-public class LO2Leop extends OpMode{
+public class LO2leop extends OpMode{
   private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
   private static final boolean useWebcam = true;
 
