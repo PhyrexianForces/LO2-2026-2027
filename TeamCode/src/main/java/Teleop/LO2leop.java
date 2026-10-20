@@ -14,7 +14,7 @@ import java.lang.Math;
 
 @TeleOp
 public class LO2leop extends OpMode{
-  private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
+  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor;
   private static final boolean useWebcam = true;
   int pipeline = 0;
   Limelight3A limelight3A;
@@ -26,24 +26,24 @@ public class LO2leop extends OpMode{
   
   @Override
   public void init() {
-    frontLeft = hardwareMap.get(DcMotorEx.class, "fl");
-    frontRight = hardwareMap.get(DcMotorEx.class, "fr");
-    backLeft = hardwareMap.get(DcMotorEx.class, "bl");
-    backRight = hardwareMap.get(DcMotorEx.class, "br");
+    frontLeftWheel = hardwareMap.get(DcMotorEx.class, "flw");
+    frontRightWheel = hardwareMap.get(DcMotorEx.class, "frw");
+    backLeftWheel = hardwareMap.get(DcMotorEx.class, "blw");
+    backRightWheel = hardwareMap.get(DcMotorEx.class, "brw");
     intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
 
     //Determines motor direction
-    frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
-    backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-    frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-    backRight.setDirection(DcMotorEx.Direction.FORWARD);
+    frontLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
+    backLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
+    frontRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
+    backRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
     intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
     //Encodes for motors
-    frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    frontLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    frontRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    backLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    backRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
     limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
@@ -62,15 +62,15 @@ public class LO2leop extends OpMode{
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
 
     //Math stuff
-    double flPower = (y + x + rx) / maxValue;
-    double blPower = (y - x + rx) / maxValue;
-    double frPower = (y - x - rx) / maxValue;
-    double brPower = (y + x - rx) / maxValue;
+    double flwPower = (y + x + rx) / maxValue;
+    double blwPower = (y - x + rx) / maxValue;
+    double frwPower = (y - x - rx) / maxValue;
+    double brwPower = (y + x - rx) / maxValue;
 
-    frontLeft.setVelocity(flPower * MTPS);
-    frontRight.setVelocity(frPower * MTPS);
-    backLeft.setVelocity(blPower * MTPS);
-    backRight.setVelocity(brPower * MTPS);
+    frontLeftWheel.setVelocity(flwPower * MTPS);
+    frontRightWheel.setVelocity(frwPower * MTPS);
+    backLeftWheel.setVelocity(blwPower * MTPS);
+    backRightWheel.setVelocity(brwPower * MTPS);
   }
 
 

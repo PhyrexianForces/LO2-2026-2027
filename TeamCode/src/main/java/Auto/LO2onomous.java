@@ -7,36 +7,36 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Autonomous
 public class LO2onomous extends OpMode {
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor;
+    private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor;
     private static final boolean useWebcam = true;
 
     Limelight3A limelight3A;
     /*
     Pipeline 0: returns blue pollen
     Pipeline 1: returns red pollen
-     Pipeline 2: returns AprilTag locations
+    Pipeline 2: returns AprilTag locations
     */
 
     @Override
     public void init() {
-        frontLeft = hardwareMap.get(DcMotorEx.class, "fl");
-        frontRight = hardwareMap.get(DcMotorEx.class, "fr");
-        backLeft = hardwareMap.get(DcMotorEx.class, "bl");
-        backRight = hardwareMap.get(DcMotorEx.class, "br");
+        frontLeftWheel = hardwareMap.get(DcMotorEx.class, "flw");
+        frontRightWheel = hardwareMap.get(DcMotorEx.class, "frw");
+        backLeftWheel = hardwareMap.get(DcMotorEx.class, "blw");
+        backRightWheel = hardwareMap.get(DcMotorEx.class, "brw");
         intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
 
         //Determines motor direction
-        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
+        backRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
         intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
         //Encodes for motors
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
