@@ -12,8 +12,8 @@ public class LO2onomous extends OpMode {
 
     Limelight3A limelight3A;
     /*
-    Pipeline 0: returns blue pollen
-    Pipeline 1: returns red pollen
+    Pipeline 0: returns red pollen
+    Pipeline 1: returns blue pollen
     Pipeline 2: returns AprilTag locations
     */
 
@@ -50,6 +50,6 @@ public class LO2onomous extends OpMode {
 
     @Override
     public void loop() {
-
+        frontLeftWheel.setVelocity(1);
     }
 }
