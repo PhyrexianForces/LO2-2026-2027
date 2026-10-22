@@ -10,6 +10,8 @@ public class LO2onomous extends OpMode {
     private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor;
     private static final boolean useWebcam = true;
 
+    int pipeline = 0;
+
     Limelight3A limelight3A;
     /*
     Pipeline 0: returns red pollen
@@ -47,11 +49,12 @@ public class LO2onomous extends OpMode {
     //Triggers on robot startup
     public void start() {
         limelight3A.pipelineSwitch(0);
+        pipeline = 0;
         limelight3A.start();
     }
 
     @Override
     public void loop() {
-        frontLeftWheel.setVelocity(1);
+
     }
 }
