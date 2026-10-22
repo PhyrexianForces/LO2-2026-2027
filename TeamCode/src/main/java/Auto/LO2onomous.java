@@ -17,6 +17,8 @@ public class LO2onomous extends OpMode {
     Pipeline 2: returns AprilTag locations
     */
 
+    //Field Dimensions: 3.556m Square
+
     @Override
     public void init() {
         frontLeftWheel = hardwareMap.get(DcMotorEx.class, "flw");
