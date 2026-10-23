@@ -78,12 +78,20 @@ public class LO2leop extends OpMode{
      LLResult llResult = limelight3A.getLatestResult();
        if (llResult != null && llResult.isValid()) {
          if (pipeline <= 1) {
-           telemetry.addData("Tx", llResult.getTx());
-           telemetry.addData("Ty", llResult.getTy());
-           telemetry.addData("Ta", llResult.getTa());
+           double targetX = llResult.getTx();
+           double targetY = llResult.getTy();
+           double targetA = llResult.getTa();
+
+           telemetry.addData("Target X", targetX);
+           telemetry.addData("Target Y", targetY);
+           telemetry.addData("Target A", targetA);
          } else {
-           Pose3D pose3D = llResult.getBotpose();
-           telemetry.addData("Bot Pose", pose3D);
+           Pose3D botpose = llResult.getBotpose();
+           if (botpose != null) {
+             double x = botpose.getPosition().x;
+             double y = botpose.getPosition().y;
+             telemetry.addData("Bot Pose", "(" + x + ", " + y + ")");
+           }
          }
        } else {
          telemetry.addLine("noneFound");

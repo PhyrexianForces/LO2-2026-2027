@@ -1,9 +1,12 @@
 package Auto;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 @Autonomous
 public class LO2onomous extends OpMode {
@@ -55,6 +58,26 @@ public class LO2onomous extends OpMode {
 
     @Override
     public void loop() {
+        LLResult llResult = limelight3A.getLatestResult();
+        if (llResult != null && llResult.isValid()) {
+            if (pipeline <= 1) {
+                double targetX = llResult.getTx(); //Degrees of target to the left/right
+                double targetY = llResult.getTy(); //Degrees of target to the up/down
+                double targetA = llResult.getTa(); //Percent of space target takes up in vision
 
+                telemetry.addData("Target X", targetX);
+                telemetry.addData("Target Y", targetY);
+                telemetry.addData("Target A", targetA);
+            } else {
+                Pose3D botpose = llResult.getBotpose();
+                if (botpose != null) {
+                    double x = botpose.getPosition().x;
+                    double y = botpose.getPosition().y;
+                    telemetry.addData("Bot Pose", "(" + x + ", " + y + ")");
+                }
+            }
+        } else {
+            telemetry.addLine("noneFound");
+        }
     }
 }
