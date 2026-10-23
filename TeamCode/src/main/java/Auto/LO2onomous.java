@@ -49,12 +49,28 @@ public class LO2onomous extends OpMode {
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
+    static double distanceToTarget(double targetY, boolean isBalls) {
+        double LMAD; //Amount of degrees limelight is from being perfectly straight
+        double limelightHeight = 10;
+        double targetHeight;
+
+        if(isBalls) {
+            LMAD = -10; //Amount of degrees limelight is from being perfectly straight
+            targetHeight = 0;
+        } else {
+            LMAD = 10;
+            targetHeight = 30;
+        }
+        return (targetHeight - limelightHeight) / Math.tan(targetY + LMAD);
+    }
+
     //Triggers on robot startup
     public void start() {
         limelight3A.pipelineSwitch(0);
         pipeline = 0;
         limelight3A.start();
     }
+
 
     @Override
     public void loop() {
