@@ -54,7 +54,7 @@ public class LO2onomous extends OpMode {
         double limelightHeight = 10;
         double targetHeight;
 
-        if(isBalls) {
+        if (isBalls) {
             LMAD = -10; //Amount of degrees limelight is from being perfectly straight
             targetHeight = 0;
         } else {
@@ -64,36 +64,41 @@ public class LO2onomous extends OpMode {
         return (targetHeight - limelightHeight) / Math.tan(targetY + LMAD);
     }
 
-    //Triggers on robot startup
-    public void start() {
+    double[] getNectar() {
+        double[] targetPos = new double[3];
+        limelight3A.pipelineSwitch(1);
+        pipeline = 1;
+
+        for(int i = 0; i < 4; i++) {
+            LLResult llResult = limelight3A.getLatestResult();
+            if (llResult != null && llResult.isValid()) {
+
+                targetPos[0] = llResult.getTx();
+                targetPos[1] = llResult.getTy();
+                targetPos[2] = llResult.getTa();
+
+                telemetry.addData("Target X", targetPos[0]);
+                telemetry.addData("Target Y", targetPos[1]);
+                telemetry.addData("Target A", targetPos[2]);
+
+                break;
+            } else {
+                //Turn 90 degrees
+                frontRightWheel.setVelocity(1);
+            }
+        }
+        return targetPos;
+    }
+
+        //Triggers on robot startup
+    public void start () {
         limelight3A.pipelineSwitch(0);
         pipeline = 0;
         limelight3A.start();
     }
 
-
     @Override
-    public void loop() {
-        LLResult llResult = limelight3A.getLatestResult();
-        if (llResult != null && llResult.isValid()) {
-            if (pipeline <= 1) {
-                double targetX = llResult.getTx(); //Degrees of target to the left/right
-                double targetY = llResult.getTy(); //Degrees of target to the up/down
-                double targetA = llResult.getTa(); //Percent of space target takes up in vision
-
-                telemetry.addData("Target X", targetX);
-                telemetry.addData("Target Y", targetY);
-                telemetry.addData("Target A", targetA);
-            } else {
-                Pose3D botpose = llResult.getBotpose();
-                if (botpose != null) {
-                    double x = botpose.getPosition().x;
-                    double y = botpose.getPosition().y;
-                    telemetry.addData("Bot Pose", "(" + x + ", " + y + ")");
-                }
-            }
-        } else {
-            telemetry.addLine("noneFound");
-        }
+    public void loop () {
+        double[] nectarPos = getNectar();
     }
 }
