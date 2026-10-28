@@ -59,7 +59,7 @@ public class LO2onomous extends OpMode {
             targetHeight = 0;
         } else {
             LMAD = 10;
-            targetHeight = 30;
+            targetHeight = 1.4478;
         }
         return (targetHeight - limelightHeight) / Math.tan(targetY + LMAD);
     }
@@ -97,8 +97,17 @@ public class LO2onomous extends OpMode {
         limelight3A.start();
     }
 
+    double robotVelocity = 2;
+
     @Override
     public void loop () {
         double[] nectarPos = getNectar();
+        double nectarDist = distanceToTarget(nectarPos[1], true);
+
+        frontRightWheel.setVelocity(1);
+        frontLeftWheel.setVelocity(1);
+        //Sleep for dist/velocity
+        frontLeftWheel.setVelocity(0);
+        frontRightWheel.setVelocity(0);
     }
 }
