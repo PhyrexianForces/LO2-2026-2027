@@ -73,6 +73,8 @@ public class LO2leop extends OpMode{
     backRightWheel.setVelocity(brwPower * MTPS);
   }
 
+  void getTargetAndLaunch()
+
   @Override
   public void loop() {
      LLResult llResult = limelight3A.getLatestResult();

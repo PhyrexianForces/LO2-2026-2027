@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Autonomous
 public class LO2onomous extends OpMode {
     private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor;
@@ -47,6 +51,25 @@ public class LO2onomous extends OpMode {
         intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+    }
+
+    double calculateShot(double distanceToTarget) {
+        //Defining the variables for the equation
+        double g = -9.8;
+        double y = 1.4478; //meters
+
+        List<Double> possibleVelocities = new ArrayList<>();
+
+        for (int i = 0; i <= 9; i++) {
+            double angle = i * 10;
+
+            double possibility = (Math.sqrt((g * Math.pow(distanceToTarget, 2)) / (2 * Math.pow((Math.cos(angle)), 2) * (y - distanceToTarget * Math.tan(angle)))));
+
+            if (possibility < 29.84513) {
+                possibleVelocities.add(possibility);
+            }
+        }
+        return Collections.min(possibleVelocities);
     }
 
     static double distanceToTarget(double targetY, boolean isBalls) {
@@ -106,7 +129,7 @@ public class LO2onomous extends OpMode {
 
         frontRightWheel.setVelocity(1);
         frontLeftWheel.setVelocity(1);
-        //Sleep for dist/velocity
+        //Sleep for dist / velocity
         frontLeftWheel.setVelocity(0);
         frontRightWheel.setVelocity(0);
     }
