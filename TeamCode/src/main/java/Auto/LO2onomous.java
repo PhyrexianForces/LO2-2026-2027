@@ -53,7 +53,7 @@ public class LO2onomous extends OpMode {
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
-    double calculateShot(double distanceToTarget) {
+    double calculateShotVelocity(double distanceToTarget) {
         //Defining the variables for the equation
         double g = -9.8;
         double y = 1.4478; //meters
