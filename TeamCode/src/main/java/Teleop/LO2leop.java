@@ -24,6 +24,7 @@ public class LO2leop extends OpMode{
   private static final boolean useWebcam = true;
   Limelight3A limelight3A;
   double theAngle;
+  boolean autoAiming  = false;
   /*
   Pipeline 0: returns red pollen
   Pipeline 1: returns blue pollen
@@ -83,8 +84,7 @@ public class LO2leop extends OpMode{
     List<Double> possibleVelocities = new ArrayList<>();
     List<Double> possibleAngles = new ArrayList<>();
 
-    for (int i = 0; i <= 9; i++) {
-      double angle = i * 10;
+    for (double angle = 0; angle <= 15.5; angle += 0.5) {
 
       double possibility = (Math.sqrt((g * Math.pow(distanceToTarget, 2)) / (2 * Math.pow((Math.cos(angle)), 2) * (y - distanceToTarget * Math.tan(angle)))));
 
@@ -132,7 +132,14 @@ public class LO2leop extends OpMode{
     double x = gamepad1.left_stick_x;
     double rx = gamepad1.right_stick_x;
     if (gamepad1.a) {
-      outakeMotor.setVelocity(velocity);
+      if (autoAiming) {
+        outakeMotor.setVelocity(velocity);
+      } else {
+        outakeMotor.setPower(1);
+      }
+    }
+    if (gamepad1.x) {
+      autoAiming = !autoAiming;
     }
     driveOmni(y, rx, x);
    }
