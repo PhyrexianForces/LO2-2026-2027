@@ -67,7 +67,7 @@ public class LO2leop extends OpMode{
 
   static double distanceToTarget(double targetY) {
     double LMAD; //Amount of degrees limelight is from being perfectly straight
-    double limelightHeight = 10;
+    double limelightHeight = 10; //10 is a placeholder
     double targetHeight;
 
     LMAD = 10;
