@@ -1,5 +1,7 @@
 package Teleop;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,13 +16,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.lang.Math;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import codebase.actions.SleepAction;
+
 @TeleOp
 public class LO2leop extends OpMode{
-  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outakeMotor;
+  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outtakeMotor, hoodMotor;
   private static final boolean useWebcam = true;
   Limelight3A limelight3A;
   double theAngle;
@@ -38,7 +41,8 @@ public class LO2leop extends OpMode{
     backLeftWheel = hardwareMap.get(DcMotorEx.class, "blw");
     backRightWheel = hardwareMap.get(DcMotorEx.class, "brw");
     intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
-    outakeMotor = hardwareMap.get(DcMotorEx.class, "om");
+    outtakeMotor = hardwareMap.get(DcMotorEx.class, "om");
+    hoodMotor = hardwareMap.get(DcMotorEx.class, "hm");
 
     //Determines motor direction
     frontLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
@@ -46,7 +50,8 @@ public class LO2leop extends OpMode{
     frontRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
     backRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
     intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
-    outakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+    outtakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+    hoodMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
     //Encodes for motors
     frontLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -54,7 +59,8 @@ public class LO2leop extends OpMode{
     backLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    outakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    outtakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    hoodMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
   }
@@ -133,13 +139,24 @@ public class LO2leop extends OpMode{
     double rx = gamepad1.right_stick_x;
     if (gamepad1.a) {
       if (autoAiming) {
-        outakeMotor.setVelocity(velocity);
+        hoodMotor.setVelocity(1);
+        hoodMotor.setVelocity(-1);
+          try {
+              sleep((long) (1000 * theAngle));
+          } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+          }
+          hoodMotor.setVelocity(0);
+          outtakeMotor.setVelocity(velocity);
       } else {
-        outakeMotor.setPower(1);
+        outtakeMotor.setPower(1);
       }
     }
     if (gamepad1.x) {
       autoAiming = !autoAiming;
+    }
+    if (gamepad1.b) {
+      intakeMotor.setPower(1);
     }
     driveOmni(y, rx, x);
    }
