@@ -160,6 +160,7 @@ public class LO2leop extends OpMode{
     }
     if (gamepad1.y) {
       outtakeMotor.setpower(1); // button for powering outtake motor. pretty sure we need this
+    }
     driveOmni(y, rx, x);
    }
 }
