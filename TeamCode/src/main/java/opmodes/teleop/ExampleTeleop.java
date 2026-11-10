@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import launchpad.Constants;
 import launchpad.TeleopBase;
+import launchpad.actions.MoveToAction;
 import launchpad.actions.SleepAction;
 import launchpad.actions.Testing3AxisAlignment;
 import launchpad.geometry.FieldPosition;
@@ -17,13 +18,20 @@ import launchpad.movement.mecanum.MecanumCoefficientSet;
 import launchpad.movement.mecanum.MecanumDriver;
 import launchpad.pathing.Localizer;
 import launchpad.pathing.PinpointLocalizer;
+import launchpad.telemetry_viewer.websocket.TelemetryData;
+import launchpad.telemetry_viewer.websocket.TelemetryObject;
 
 @TeleOp(name="Example Teleop")
 public class ExampleTeleop extends TeleopBase {
 
-    private MecanumDriver driver;
-    private PinpointLocalizer localizer;
-    private Motor fl, fr, bl, br;
+    @TelemetryObject
+    MecanumDriver driver;
+
+    @TelemetryObject
+    PinpointLocalizer localizer;
+
+    @TelemetryObject
+    Motor fl, fr, bl, br;
 
     @Override
     public void init() {
@@ -36,7 +44,7 @@ public class ExampleTeleop extends TeleopBase {
 
         localizer = new PinpointLocalizer(hardwareMap.get(PinpointModule.class, "pinpoint"), Constants.PINPOINT_X_OFFSET, PinpointModule.EncoderDirection.FORWARD, Constants.PINPOINT_Y_OFFSET, PinpointModule.EncoderDirection.FORWARD, PinpointModule.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         localizer.init();
-        driver = new MecanumDriver(fl, fr, bl, br, new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, 1, -1, 1), Constants.ROTATION_RADIUS_IN), 10);
+        driver = new MecanumDriver(fl, fr, bl, br, new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, 1, -1, 1), Constants.ROTATION_RADIUS_IN), 80, 15);
 
 
         // Make a button do something
@@ -56,7 +64,7 @@ public class ExampleTeleop extends TeleopBase {
 
         // Second driver's controller
         mainGamepad.aButton.onPress(() -> {
-            runningActions.addAndInitialize(new Testing3AxisAlignment(driver, localizer, new FieldPosition(0, 5, 0), 1, 1, 3, Math.toRadians(5)));
+            runningActions.addAndInitialize(new MoveToAction(driver, localizer, new FieldPosition(localizer.getCurrentPosition().x + 10, localizer.getCurrentPosition().y + 10, localizer.getCurrentPosition().direction + Math.PI/2), 1, 1, 0.25, Math.toRadians(1)));
         });
     }
 

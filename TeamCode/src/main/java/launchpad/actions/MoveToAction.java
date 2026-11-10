@@ -2,8 +2,13 @@ package launchpad.actions;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+
+import java.util.function.Supplier;
+
 import launchpad.Constants;
 import launchpad.controllers.Controller;
+import launchpad.controllers.PIDController;
 import launchpad.controllers.SigmoidController;
 import launchpad.geometry.Angles;
 import launchpad.geometry.FieldPosition;
@@ -39,6 +44,12 @@ public class MoveToAction implements Action {
     private final Controller yController;
     private final Controller directionController;
 
+    @ActionParameter
+    private PIDCoefficients movementPidCoefficients;
+
+    @ActionParameter
+    private PIDCoefficients rotationPidCoefficients;
+
     public MoveToAction(@NonNull MecanumDriver driver, @NonNull Localizer localizer, @NonNull FieldPosition destination, double movementSpeedMultiplier, double rotationalSpeedMultiplier, double maxDistanceError, double maxRotationalError) {
         this.driver = driver;
         this.localizer = localizer;
@@ -48,11 +59,10 @@ public class MoveToAction implements Action {
         this.maxDistanceError = maxDistanceError;
         this.maxRotationalError = maxRotationalError;
 
-        this.xController = new SigmoidController(Constants.MOVEMENT_VELOCITY, Constants.MOVEMENT_STEEPNESS, () -> localizer.getCurrentPosition().x, () -> destination.x);
-        this.yController = new SigmoidController(Constants.MOVEMENT_VELOCITY, Constants.MOVEMENT_STEEPNESS, () -> localizer.getCurrentPosition().y, () -> destination.y);
-        this.directionController = new SigmoidController(
-                Constants.ROTATION_VELOCITY,
-                Constants.ROTATION_STEEPNESS,
+        this.xController = new PIDController(movementPidCoefficients, () -> localizer.getCurrentPosition().x, () -> destination.x);
+        this.yController = new PIDController(movementPidCoefficients, () -> localizer.getCurrentPosition().y, () -> destination.y);
+        this.directionController = new PIDController(
+                rotationPidCoefficients,
                 () -> Angles.angleDifference(localizer.getCurrentPosition().direction, destination.direction)
         );
     }
@@ -101,5 +111,13 @@ public class MoveToAction implements Action {
 
     public double getErrorDirection() {
         return directionController.getError();
+    }
+
+    public void setMovementPidCoefficients(PIDCoefficients coefficients) {
+        movementPidCoefficients = coefficients;
+    }
+
+    public void setRotationPidCoefficients(PIDCoefficients coefficients) {
+        rotationPidCoefficients = coefficients;
     }
 }
