@@ -19,11 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import codebase.actions.SleepAction;
-
 @TeleOp
 public class LO2leop extends OpMode{
-  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outtakeMotor, hoodMotor;
+  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outtakeMotor, hoodMotor, wheelMotor, outtakeRotateMotor;
   private static final boolean useWebcam = true;
   Limelight3A limelight3A;
   double theAngle;
@@ -43,6 +41,8 @@ public class LO2leop extends OpMode{
     intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
     outtakeMotor = hardwareMap.get(DcMotorEx.class, "om");
     hoodMotor = hardwareMap.get(DcMotorEx.class, "hm");
+    wheelMotor = hardwareMap.get(DcMotorEx.class, "wm");
+    outtakeRotateMotor = hardwareMap.get(DcMotorEx.class, "wm");
 
     //Determines motor direction
     frontLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
@@ -52,6 +52,8 @@ public class LO2leop extends OpMode{
     intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
     outtakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
     hoodMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    wheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    outtakeRotateMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
     //Encodes for motors
     frontLeftWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -61,6 +63,8 @@ public class LO2leop extends OpMode{
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     outtakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     hoodMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    wheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    outtakeRotateMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
   }
@@ -105,7 +109,7 @@ public class LO2leop extends OpMode{
   }
 
   public void driveOmni(double y, double rx, double x) {
-    final double MTPS = 4661; //Max ticks per second
+    final double MTPS = 4661; //Max tic per second
     //Finds the greatest, positive, not float value among x, y, and rx
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
 
@@ -159,7 +163,13 @@ public class LO2leop extends OpMode{
       intakeMotor.setPower(1);
     }
     if (gamepad1.y) {
-      outtakeMotor.setpower(1); // button for powering outtake motor. pretty sure we need this
+      wheelMotor.setPower(1);
+    }
+    if (gamepad1.right_bumper) {
+      outtakeRotateMotor.setPower(1);
+    }
+    if (gamepad1.left_bumper) {
+      outtakeRotateMotor.setPower(-1);
     }
     driveOmni(y, rx, x);
    }
