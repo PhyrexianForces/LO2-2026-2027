@@ -109,7 +109,7 @@ public class LO2leop extends OpMode{
   }
 
   public void driveOmni(double y, double rx, double x) {
-    final double MTPS = 4661; //Max tic per second
+    final double MTPS = 4661; //Max ticks per second
     //Finds the greatest, positive, not float value among x, y, and rx
     double maxValue = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
 
