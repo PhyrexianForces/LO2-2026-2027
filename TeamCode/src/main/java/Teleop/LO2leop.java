@@ -153,8 +153,10 @@ public class LO2leop extends OpMode{
           hoodMotor.setVelocity(0);
           outtakeMotor.setVelocity(velocity);
       } else {
-        outtakeMotor.setPower(1);
+        outtakeMotor.setPower(0.4);
       }
+    } else {
+      outtakeMotor.setPower(0);
     }
     if (gamepad1.x) {
       autoAiming = !autoAiming;
