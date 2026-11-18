@@ -1,2 +1,5 @@
 node_modules/
 dist/
+
+# Raw CAD exports are  too large for git. Keeping local
+raw-models/

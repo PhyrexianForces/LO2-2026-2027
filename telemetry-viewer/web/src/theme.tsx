@@ -11,7 +11,7 @@ interface Theme {
   colorNumeric: string; colorString: string;
   colorSimultaneous: string; colorWaiting: string;
   color3dRobot: string; color3dCone: string;
-  color3dFloor: string; color3dGrid: string; color3dBorder: string;
+  color3dFloor: string; color3dSeam: string;
 }
 
 const darkTheme: Theme = {
@@ -40,8 +40,7 @@ const darkTheme: Theme = {
   color3dRobot: '#1565c0',
   color3dCone: '#f44336',
   color3dFloor: '#111',
-  color3dGrid: '#333',
-  color3dBorder: '#666',
+  color3dSeam: '#2a2a2a',
 };
 
 const lightTheme: Theme = {
@@ -70,8 +69,7 @@ const lightTheme: Theme = {
   color3dRobot: '#1976d2',
   color3dCone: '#d32f2f',
   color3dFloor: '#e0e0e0',
-  color3dGrid: '#bdbdbd',
-  color3dBorder: '#888',
+  color3dSeam: '#3a3a3a',
 };
 
 interface ThemeContextValue {
