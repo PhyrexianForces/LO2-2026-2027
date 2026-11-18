@@ -17,8 +17,8 @@ public class Constants {
 
     public static final MecanumCoefficientMatrix MECANUM_COEFFICIENT_MATRIX = new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, 1, -1, 1), ROTATION_RADIUS_IN);
 
-    public static final double PINPOINT_X_OFFSET = -101;
-    public static final double PINPOINT_Y_OFFSET = -169;
+    public static final double PINPOINT_X_OFFSET = 22.225;
+    public static final double PINPOINT_Y_OFFSET = -62.5;
 
     public static final double LIMELIGHT_LENS_HEIGHT = 0;
 
