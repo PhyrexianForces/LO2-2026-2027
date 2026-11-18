@@ -5,13 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import launchpad.Constants;
 import launchpad.TeleopBase;
-import launchpad.actions.MoveToAction;
-import launchpad.geometry.FieldPosition;
+import launchpad.geometry.MovementVector;
 import launchpad.hardware.Motor;
 import launchpad.hardware.MotorConfig;
 import launchpad.hardware.PinpointModule;
-import launchpad.movement.mecanum.MecanumCoefficientMatrix;
-import launchpad.movement.mecanum.MecanumCoefficientSet;
 import launchpad.movement.mecanum.MecanumDriver;
 import launchpad.pathing.PinpointLocalizer;
 import launchpad.telemetry_viewer.websocket.TelemetryObject;
@@ -39,7 +36,7 @@ public class ExampleTeleop extends TeleopBase {
 
         localizer = new PinpointLocalizer(hardwareMap.get(PinpointModule.class, "pinpoint"), Constants.PINPOINT_X_OFFSET, PinpointModule.EncoderDirection.FORWARD, Constants.PINPOINT_Y_OFFSET, PinpointModule.EncoderDirection.FORWARD, PinpointModule.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         localizer.init();
-        driver = new MecanumDriver(fl, fr, bl, br, new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, 1, -1, 1), Constants.ROTATION_RADIUS_IN), 80, 15);
+        driver = new MecanumDriver(fl, fr, bl, br, Constants.MECANUM_COEFFICIENT_MATRIX, Constants.MAX_WHEEL_VELOCITY, Constants.MIN_WHEEL_VELOCITY);
 
 
         // Make a button do something
@@ -56,11 +53,6 @@ public class ExampleTeleop extends TeleopBase {
 
         // Analog trigger value, 0.0 to 1.0 — variable speed control
         // intake.setPower(mainGamepad.rightTrigger.getValue());
-
-        // Second driver's controller
-        mainGamepad.aButton.onPress(() -> {
-            runningActions.addAndInitialize(new MoveToAction(driver, localizer, new FieldPosition(localizer.getCurrentPosition().x + 10, localizer.getCurrentPosition().y + 10, localizer.getCurrentPosition().direction + Math.PI/2), 1, 1, 0.25, Math.toRadians(1)));
-        });
     }
 
     @Override
@@ -80,6 +72,6 @@ public class ExampleTeleop extends TeleopBase {
         telemetry.update();
 
         // Drive using controller (Note: in the future, add encoder wires to each drive motor, and change this to driver.setRelativeVelocity())
-//         driver.setRelativePower(new MovementVector(mainGamepad.leftJoystick.getY(), mainGamepad.leftJoystick.getX(), mainGamepad.rightJoystick.getX()));
+         driver.setRelativePower(new MovementVector(mainGamepad.leftJoystick.getY(), mainGamepad.leftJoystick.getX(), mainGamepad.rightJoystick.getX()));
     }
 }

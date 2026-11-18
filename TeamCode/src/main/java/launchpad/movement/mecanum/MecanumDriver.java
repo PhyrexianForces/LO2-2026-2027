@@ -336,23 +336,8 @@ public class MecanumDriver {
         );
 
         return applyRelativeVelocity(relativeVelocity);
+
     }
-
-    /**
-     * Get the max speed
-     * @param direction
-     * @return
-     */
-    public double maxFeasibleSpeed(MovementVector direction) {
-        MecanumCoefficientSet coefficients = mecanumDriveCoefficients.calculateCoefficientsWithVelocity(
-                direction.getVerticalVelocity(),
-                direction.getHorizontalVelocity(),
-                direction.getRotationalVelocity()
-        );
-
-        return maxWheelVelocity / coefficients.getHighestWheelMagnitude();
-    }
-
     /**
      * Stops all motors by setting powers to zero.
      */
