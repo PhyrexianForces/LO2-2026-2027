@@ -2,9 +2,10 @@ package launchpad.actions;
 
 import androidx.annotation.NonNull;
 
+
 import launchpad.Constants;
 import launchpad.controllers.Controller;
-import launchpad.controllers.SigmoidController;
+import launchpad.controllers.PIDController;
 import launchpad.geometry.Angles;
 import launchpad.geometry.FieldPosition;
 import launchpad.geometry.MovementVector;
@@ -48,11 +49,10 @@ public class MoveToAction implements Action {
         this.maxDistanceError = maxDistanceError;
         this.maxRotationalError = maxRotationalError;
 
-        this.xController = new SigmoidController(Constants.MOVEMENT_VELOCITY, Constants.MOVEMENT_STEEPNESS, () -> localizer.getCurrentPosition().x, () -> destination.x);
-        this.yController = new SigmoidController(Constants.MOVEMENT_VELOCITY, Constants.MOVEMENT_STEEPNESS, () -> localizer.getCurrentPosition().y, () -> destination.y);
-        this.directionController = new SigmoidController(
-                Constants.ROTATION_VELOCITY,
-                Constants.ROTATION_STEEPNESS,
+        this.xController = new PIDController(Constants.MOVEMENT_PID_COEFFICIENTS, () -> localizer.getCurrentPosition().x, () -> destination.x);
+        this.yController = new PIDController(Constants.MOVEMENT_PID_COEFFICIENTS, () -> localizer.getCurrentPosition().y, () -> destination.y);
+        this.directionController = new PIDController(
+                Constants.ROTATION_PID_COEFFICIENTS,
                 () -> Angles.angleDifference(localizer.getCurrentPosition().direction, destination.direction)
         );
     }

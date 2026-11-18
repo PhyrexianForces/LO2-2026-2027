@@ -28,6 +28,24 @@ public class MecanumDriver {
     public final MecanumCoefficientMatrix mecanumDriveCoefficients;
     /** Maximum allowable wheel velocity in inches per second. */
     private final double maxWheelVelocity;
+    /**
+     * Minimum velocity in inches per second for the fastest wheel of a non-zero velocity command,
+     * or 0 to disable the floor.
+     * <p>
+     * Purely proportional control commands a velocity that shrinks with the remaining error, so it
+     * approaches the target asymptotically and eventually falls below the velocity needed to
+     * overcome static friction, leaving the robot stalled short of its target. Holding the fastest
+     * wheel at a floor keeps the robot moving until it is actually there.
+     * <p>
+     * <b>The caller must stop the robot once it is within tolerance</b>, otherwise the floor will
+     * drive it past the target, back, and past again forever. For that stop to be reachable,
+     * {@code minWheelVelocity * loopTimeSeconds} must be comfortably smaller than the position
+     * tolerance, or the robot can step straight over the tolerance band in a single loop and never
+     * register as arrived. At a 20ms loop and 5 in/s that step is 0.1 inches, so tolerances need to
+     * be meaningfully larger than that. Raising this value raises the smallest tolerance you can
+     * reliably hit.
+     */
+    private final double minWheelVelocity;
 
     /** The vector last passed to a set*Power/set*Velocity call, in whichever frame it was given. */
     @TelemetryData
@@ -38,7 +56,43 @@ public class MecanumDriver {
     private MovementFrame currentMovementFrame = MovementFrame.RELATIVE;
 
     /**
-     * Constructs a MecanumDriver with the specified motors, coefficient matrix, and maximum wheel velocity.
+     * Constructs a MecanumDriver with the specified motors, coefficient matrix, and wheel velocity limits.
+     *
+     * @param fl Front-left motor.
+     * @param fr Front-right motor.
+     * @param bl Back-left motor.
+     * @param br Back-right motor.
+     * @param mecanumDriveCoefficients Coefficient matrix for drive adjustments.
+     * @param maxWheelVelocity Maximum wheel velocity in inches per second.
+     * @param minWheelVelocity Minimum velocity in inches per second for the fastest wheel of a non-zero
+     *                         command, or 0 to disable. See {@link #minWheelVelocity} for the loop-time
+     *                         constraint this places on your position tolerance.
+     */
+    public MecanumDriver(
+            @NonNull Motor fl,
+            @NonNull Motor fr,
+            @NonNull Motor bl,
+            @NonNull Motor br,
+            @NonNull MecanumCoefficientMatrix mecanumDriveCoefficients,
+            double maxWheelVelocity,
+            double minWheelVelocity
+    ) {
+        this.fl = fl;
+        this.fr = fr;
+        this.bl = bl;
+        this.br = br;
+        this.mecanumDriveCoefficients = mecanumDriveCoefficients;
+        this.maxWheelVelocity = maxWheelVelocity;
+        this.minWheelVelocity = minWheelVelocity;
+
+        fl.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+    }
+
+    /**
+     * Constructs a MecanumDriver with no minimum wheel velocity.
      *
      * @param fl Front-left motor.
      * @param fr Front-right motor.
@@ -55,17 +109,7 @@ public class MecanumDriver {
             @NonNull MecanumCoefficientMatrix mecanumDriveCoefficients,
             double maxWheelVelocity
     ) {
-        this.fl = fl;
-        this.fr = fr;
-        this.bl = bl;
-        this.br = br;
-        this.mecanumDriveCoefficients = mecanumDriveCoefficients;
-        this.maxWheelVelocity = maxWheelVelocity;
-
-        fl.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        this(fl, fr, bl, br, mecanumDriveCoefficients, maxWheelVelocity, 0);
     }
 
     /**
@@ -147,12 +191,62 @@ public class MecanumDriver {
     }
 
     /**
-     * Sets relative velocities for the drive system.
-     * Normalizes the velocities to ensure they do not exceed the maximum wheel velocity.
+     * Calculates the per-wheel velocities a movement command works out to, before any limiting.
      *
      * @param velocity MovementVector containing velocity inputs (inches/second or radians/second).
+     * @return the unlimited wheel velocities in inches per second.
      */
-    public void setRelativeVelocity(MovementVector velocity) throws IllegalStateException {
+    private MecanumCoefficientSet coefficientsFor(MovementVector velocity) {
+        return this.mecanumDriveCoefficients.calculateCoefficientsWithVelocity(
+                velocity.getVerticalVelocity(),
+                velocity.getHorizontalVelocity(),
+                velocity.getRotationalVelocity()
+        );
+    }
+
+    /**
+     * Calculates how far a movement command can be scaled up before the fastest wheel reaches
+     * {@code maxWheelVelocity}.
+     * <p>
+     * How fast the robot can travel depends on which way it is going, because all three axes of a
+     * movement command draw on the same four wheels. Driving straight forwards uses one wheel's
+     * worth of velocity per wheel, but driving at 45 degrees stacks the vertical and horizontal
+     * components on the same wheels and so tops out at about 71% of that speed. Adding rotation
+     * takes a further share.
+     * <p>
+     * The returned value is a multiplier for the vector that was passed in, not a speed. If that
+     * vector is a unit vector, the two are the same and the result is the fastest that direction can
+     * be driven in inches per second. Requesting {@code min(desiredSpeed, maxScaleFor(direction))}
+     * keeps a command inside the achievable range, so it is followed exactly rather than being
+     * silently cut down by {@link #setRelativeVelocity}.
+     *
+     * @param direction MovementVector giving the direction of travel to measure.
+     * @return the largest factor the given vector can be multiplied by, or positive infinity for a zero vector.
+     */
+    public double maxScaleFor(MovementVector direction) throws IllegalStateException {
+        if (maxWheelVelocity == -1) {
+            throw new IllegalStateException("Can not find the maximum scale without first setting maxWheelVelocity");
+        }
+
+        double highestWheelMagnitude = coefficientsFor(direction).getHighestWheelMagnitude();
+
+        return highestWheelMagnitude == 0 ? Double.POSITIVE_INFINITY : maxWheelVelocity / highestWheelMagnitude;
+    }
+
+    /**
+     * Sets relative velocities for the drive system.
+     * <p>
+     * The command is limited to {@code maxWheelVelocity} and, if one is set, lifted to
+     * {@code minWheelVelocity}. Both limits scale all four wheels by the same factor, so the
+     * vertical, horizontal, and rotational parts of the command keep their ratios and the robot
+     * still travels in the requested direction. Only its speed changes, which means each axis
+     * always covers the same percentage of its own movement as the other two.
+     *
+     * @param velocity MovementVector containing velocity inputs (inches/second or radians/second).
+     * @return the factor the command was scaled by: 1 if it was followed exactly, below 1 if it was
+     *         too fast for the wheels, above 1 if the minimum velocity lifted it.
+     */
+    public double setRelativeVelocity(MovementVector velocity) throws IllegalStateException {
         if (maxWheelVelocity == -1) {
             throw new IllegalStateException("Can not set velocity without first setting maxWheelVelocity");
         }
@@ -161,22 +255,32 @@ public class MecanumDriver {
         currentControlMode = ControlMode.VELOCITY;
         currentMovementFrame = MovementFrame.RELATIVE;
 
-        applyRelativeVelocity(velocity);
+        return applyRelativeVelocity(velocity);
     }
 
-    private void applyRelativeVelocity(MovementVector velocity) {
-        MecanumCoefficientSet coefficientSet = this.mecanumDriveCoefficients.calculateCoefficientsWithVelocity(
-                velocity.getVerticalVelocity(),
-                velocity.getHorizontalVelocity(),
-                velocity.getRotationalVelocity()
-        ).downScale(maxWheelVelocity);
+    /**
+     * Applies a robot-relative velocity command without recording it as the current movement
+     * vector, so callers that transform a command first (e.g. field-relative) can report the
+     * original.
+     *
+     * @return the factor the command was scaled by, as described by {@link #setRelativeVelocity}.
+     */
+    private double applyRelativeVelocity(MovementVector velocity) {
+        MecanumCoefficientSet requested = coefficientsFor(velocity);
+        MecanumCoefficientSet commanded = requested
+                .upScale(minWheelVelocity)
+                .downScale(maxWheelVelocity);
 
         this.setMotorVelocities(
-                coefficientSet.fl,
-                coefficientSet.fr,
-                coefficientSet.bl,
-                coefficientSet.br
+                commanded.fl,
+                commanded.fr,
+                commanded.bl,
+                commanded.br
         );
+
+        double requestedMagnitude = requested.getHighestWheelMagnitude();
+
+        return requestedMagnitude == 0 ? 1 : commanded.getHighestWheelMagnitude() / requestedMagnitude;
     }
 
     /**
@@ -209,8 +313,9 @@ public class MecanumDriver {
      *
      * @param position Current field position including direction.
      * @param velocity MovementVector containing absolute velocity inputs (inches/second or radians/second). (vertical - x, horizontal - y)
+     * @return the factor the command was scaled by, as described by {@link #setRelativeVelocity}.
      */
-    public void setAbsoluteVelocity(FieldPosition position, MovementVector velocity) throws IllegalStateException {
+    public double setAbsoluteVelocity(FieldPosition position, MovementVector velocity) throws IllegalStateException {
         if (maxWheelVelocity == -1) {
             throw new IllegalStateException("Can not set velocity without first setting maxWheelVelocity");
         }
@@ -230,9 +335,9 @@ public class MecanumDriver {
                 velocity.getRotationalVelocity()
         );
 
-        applyRelativeVelocity(relativeVelocity);
-    }
+        return applyRelativeVelocity(relativeVelocity);
 
+    }
     /**
      * Stops all motors by setting powers to zero.
      */

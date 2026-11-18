@@ -1,19 +1,21 @@
 package launchpad;
 
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+
 import launchpad.hardware.MotorConfig;
 import launchpad.movement.mecanum.MecanumCoefficientMatrix;
 import launchpad.movement.mecanum.MecanumCoefficientSet;
 
 public class Constants {
-    public static final double MOVEMENT_VELOCITY = 30;
-    public static final double MOVEMENT_STEEPNESS = 0.8;
-    public static final double ROTATION_VELOCITY = 17.5;
-    public static final double ROTATION_STEEPNESS = 0.6;
+    public static final PIDCoefficients MOVEMENT_PID_COEFFICIENTS = new PIDCoefficients(1, 0, 0);
+    public static final PIDCoefficients ROTATION_PID_COEFFICIENTS = new PIDCoefficients(1, 0, 0);
 
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double ROTATION_RADIUS_IN = 9.9851;
     public static final double MAX_WHEEL_VELOCITY = 100;
-    public static final MecanumCoefficientMatrix MECANUM_COEFFICIENT_MATRIX = new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, -1, -1, 1), ROTATION_RADIUS_IN);
+    public static final double MIN_WHEEL_VELOCITY = 5;
+
+    public static final MecanumCoefficientMatrix MECANUM_COEFFICIENT_MATRIX = new MecanumCoefficientMatrix(new MecanumCoefficientSet(-1, 1, -1, 1), ROTATION_RADIUS_IN);
 
     public static final double PINPOINT_X_OFFSET = -101;
     public static final double PINPOINT_Y_OFFSET = -169;
