@@ -48,9 +48,10 @@ public class LocalizerTestTeleop extends OpMode {
 
     @Override
     public void loop() {
+        localizer.loop();
+
         positionDisplay.setValue(localizer.getCurrentPosition());
 
-        localizer.loop();
         driver.setRelativePower(new MovementVector(gamepad.leftJoystick.getY(), gamepad.leftJoystick.getX(), gamepad.rightJoystick.getX()));
 
         gamepad.loop();
