@@ -31,7 +31,51 @@ public class LO2leop extends OpMode{
   Pipeline 1: returns blue pollen
   Pipeline 2: returns AprilTag locations
   */
-  
+  //temporary{
+public class ProgrammingBoard5 {
+	private DigitalChannel touchSensor;
+	private DcMotor motor;
+	private double ticksPerRotation;
+	private Servo servo;
+	
+	public void init(HardwareMap hwMap) {
+		touchSensor = hwMap.get(DigitalChannel.class, "touch_sensor");
+		touchSensor.setMode(DigitalChannel.Mode.INPUT);
+		motor = hwMap.get(DcMotor.class, "motor");
+		motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		ticksPerRotation = motor.getMotorType().getTicksPerRev();
+		servo = hwMap.get(Servo.class, "servo");
+		servo.setDirection(Servo.Direction.FORWARD); //can also be REVERSE
+		servo.scaleRange(0.0, 1.0); //scale can change if needed
+	}
+	public boolean isTouchSensorPressed(){
+		return !touchSensor.getState();
+	}
+	public void setMotorSpeed(double speed){
+	motor.setPower(speed);
+}
+public double getMotorRotations(){
+	return motor.getCurrentPosition() / ticksPerRotation;
+}
+public void setServoPosition(double position){
+	servo.setPosition(position);
+}
+public class ServoGamepadOpMode extends OpMode{
+ProgrammingBoard5 board = new ProgrammingBoard5();
+	@override
+	public void init() {
+		board.init(hardwareMap);
+}
+
+@override
+public void loop(); {
+	if(gamepad1.right_trigger){
+		board.setServoPosition(0.5)
+    }
+  }
+
+}
+  //}
   @Override
   public void init() {
     frontLeftWheel = hardwareMap.get(DcMotorEx.class, "flw");
