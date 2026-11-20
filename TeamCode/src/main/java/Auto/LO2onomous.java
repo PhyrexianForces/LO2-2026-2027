@@ -1,5 +1,7 @@
 package Auto;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -127,10 +129,14 @@ public class LO2onomous extends OpMode {
         double[] nectarPos = getNectar();
         double nectarDist = distanceToTarget(nectarPos[1], true);
 
-        frontRightWheel.setVelocity(1);
-        frontLeftWheel.setVelocity(1);
-        //Sleep for dist / velocity
-        frontLeftWheel.setVelocity(0);
-        frontRightWheel.setVelocity(0);
+        frontRightWheel.setPower(1);
+        frontLeftWheel.setPower(1);
+        try {
+            sleep(7000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        frontLeftWheel.setPower(0);
+        frontRightWheel.setPower(0);
     }
 }
