@@ -21,7 +21,7 @@ import java.util.List;
 
 @TeleOp
 public class LO2leop extends OpMode{
-  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outtakeMotor, hoodMotor, wheelMotor, outtakeRotateMotor;
+  private DcMotorEx frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, intakeMotor, outtakeMotor, hoodServo, wheelMotor, outtakeRotateMotor;
   private static final boolean useWebcam = true;
   Limelight3A limelight3A;
   double theAngle;
@@ -40,9 +40,9 @@ public class LO2leop extends OpMode{
     backRightWheel = hardwareMap.get(DcMotorEx.class, "brw");
     intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
     outtakeMotor = hardwareMap.get(DcMotorEx.class, "om");
-    hoodMotor = hardwareMap.get(DcMotorEx.class, "hm");
+    //hoodServo = hardwareMap.get(DcMotorEx.class, "hs");
     wheelMotor = hardwareMap.get(DcMotorEx.class, "wm");
-    outtakeRotateMotor = hardwareMap.get(DcMotorEx.class, "wm");
+    outtakeRotateMotor = hardwareMap.get(DcMotorEx.class, "orm");
 
     //Determines motor direction
     frontLeftWheel.setDirection(DcMotorEx.Direction.REVERSE);
@@ -51,7 +51,7 @@ public class LO2leop extends OpMode{
     backRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
     intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
     outtakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
-    hoodMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    //hoodServo.setDirection(DcMotorSimple.Direction.REVERSE);
     wheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     outtakeRotateMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -62,7 +62,7 @@ public class LO2leop extends OpMode{
     backRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     outtakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    hoodMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //hoodServo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     wheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     outtakeRotateMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -145,9 +145,12 @@ public class LO2leop extends OpMode{
           outtakeMotor.setVelocity(velocity / 4661);
       } else {
         if (gamepad2.a) {
-          outtakeMotor.setVelocity(1.76);
-        } else if (gamepad2.b)
-          outtakeMotor.setVelocity(2);
+          //1.76 m/s
+          outtakeMotor.setVelocity(2800);
+        } else if (gamepad2.b) {
+          //2 m/s
+          outtakeMotor.setVelocity(3200);
+        }
       }
     } else {
       outtakeMotor.setPower(0);
