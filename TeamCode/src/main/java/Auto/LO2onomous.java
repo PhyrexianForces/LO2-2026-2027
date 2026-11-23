@@ -132,7 +132,7 @@ public class LO2onomous extends OpMode {
         frontRightWheel.setPower(1);
         frontLeftWheel.setPower(1);
         try {
-            sleep(1500);
+            sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

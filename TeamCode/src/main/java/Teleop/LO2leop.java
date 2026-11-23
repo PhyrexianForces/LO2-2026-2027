@@ -136,27 +136,26 @@ public class LO2leop extends OpMode{
 
        velocity = calculateShotVelocity(distanceToTarget(targetY));
      }
+
     //Determines the inputs of the gamepad
     double y = -gamepad1.left_stick_y;
     double x = gamepad1.left_stick_x;
     double rx = gamepad1.right_stick_x;
+
     if (gamepad2.a || gamepad2.y || gamepad2.b) {
       if (autoAiming) {
           outtakeMotor.setVelocity(velocity / 4661);
       } else {
         if (gamepad2.a) {
           //1.76 m/s
-          outtakeMotor.setVelocity(1000);
+          outtakeMotor.setVelocity(1100);
         } else if (gamepad2.b) {
           //2 m/s
-          outtakeMotor.setVelocity(1400);
+          outtakeMotor.setVelocity(1300);
         }
       }
     } else {
       outtakeMotor.setPower(0);
-    }
-    if (gamepad2.x) {
-      autoAiming = !autoAiming;
     }
     if (gamepad1.right_bumper) {
       intakeMotor.setPower(1);
@@ -165,6 +164,8 @@ public class LO2leop extends OpMode{
     }
     if (gamepad1.left_bumper) {
       wheelMotor.setPower(1);
+    } else if (gamepad1.x){
+      wheelMotor.setPower(-1);
     } else {
       wheelMotor.setPower(0);
     }
@@ -174,19 +175,6 @@ public class LO2leop extends OpMode{
       outtakeRotateMotor.setPower(-1);
     } else {
       outtakeRotateMotor.setPower(0);
-    }
-    if (gamepad1.x) {
-      outtakeMotor.setPower(-1);
-      wheelMotor.setPower(-1);
-      intakeMotor.setPower(-1);
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-      outtakeMotor.setPower(0);
-      wheelMotor.setPower(0);
-      intakeMotor.setPower(0);
     }
     driveOmni(y, rx, x);
     telemetry.addLine("AutoAiming is: " + autoAiming);
