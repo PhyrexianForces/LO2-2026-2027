@@ -26,11 +26,6 @@ public class LO2leop extends OpMode{
   Limelight3A limelight3A;
   double theAngle;
   boolean autoAiming  = false;
-  /*
-  Pipeline 0: returns red pollen
-  Pipeline 1: returns blue pollen
-  Pipeline 2: returns AprilTag locations
-  */
   
   @Override
   public void init() {
@@ -40,7 +35,6 @@ public class LO2leop extends OpMode{
     backRightWheel = hardwareMap.get(DcMotorEx.class, "brw");
     intakeMotor = hardwareMap.get(DcMotorEx.class, "im");
     outtakeMotor = hardwareMap.get(DcMotorEx.class, "om");
-    //hoodServo = hardwareMap.get(DcMotorEx.class, "hs");
     wheelMotor = hardwareMap.get(DcMotorEx.class, "wm");
     outtakeRotateMotor = hardwareMap.get(DcMotorEx.class, "orm");
 
@@ -51,7 +45,6 @@ public class LO2leop extends OpMode{
     backRightWheel.setDirection(DcMotorEx.Direction.FORWARD);
     intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
     outtakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
-    //hoodServo.setDirection(DcMotorSimple.Direction.REVERSE);
     wheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     outtakeRotateMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -62,17 +55,31 @@ public class LO2leop extends OpMode{
     backRightWheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     outtakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    //hoodServo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     wheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     outtakeRotateMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+
   }
 
   //Triggers on robot startup
   public void start() {
     limelight3A.pipelineSwitch(2);
     limelight3A.start();
+  }
+
+  public double getMotorPosition(double speed, int motor) {
+    switch (motor) {
+      case 0:
+        return intakeMotor.getCurrentPosition() / intakeMotor.getMotorType().getTicksPerRev();
+      case 1:
+        return outtakeMotor.getCurrentPosition() / outtakeMotor.getMotorType().getTicksPerRev();
+      case 2:
+        return wheelMotor.getCurrentPosition() / wheelMotor.getMotorType().getTicksPerRev();
+      case 3:
+        return outtakeRotateMotor.getCurrentPosition() / outtakeRotateMotor.getMotorType().getTicksPerRev();
+    }
+    return 0;
   }
 
   static double distanceToTarget(double targetY) {
